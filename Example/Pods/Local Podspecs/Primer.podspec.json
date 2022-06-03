@@ -1,8 +1,8 @@
 {
   "name": "Primer",
   "version": "0.1.0",
-  "summary": "A short description of Primer.",
-  "description": "TODO: Add long description of the pod here.",
+  "summary": "Light Primer iOS SDK",
+  "description": "This library contains the official iOS SDK for Primer. Install this Cocoapod to seemlessly integrate the Primer Checkout & API platform in your app.",
   "homepage": "https://github.com/Valentin Wallet/Primer",
   "license": {
     "type": "MIT",
@@ -15,8 +15,10 @@
     "git": "https://github.com/Valentin Wallet/Primer.git",
     "tag": "0.1.0"
   },
+  "swift_versions": "5.0",
   "platforms": {
-    "ios": "9.0"
+    "ios": "13.0"
   },
-  "source_files": "Primer/Classes/**/*"
+  "source_files": "Sources/**/*.swift",
+  "swift_version": "5.0"
 }
