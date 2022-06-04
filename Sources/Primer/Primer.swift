@@ -1,6 +1,16 @@
-public struct Primer {
-    public private(set) var text = "Hello, World!"
+//
+//  CGFloat+Extension.swift
+//  Primer
+//
+//  Created by Valentin Wallet on 6/3/22.
+//
 
-    public init() {
+import UIKit
+
+public struct Primer {
+    public init() {}
+    
+    public static func build() -> UIViewController {
+        return PrimerCheckoutViewController()
     }
 }
