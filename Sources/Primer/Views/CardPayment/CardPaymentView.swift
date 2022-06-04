@@ -12,12 +12,14 @@ final class CardPaymentView: UIView {
     private let expiryDateView: CardPaymentTextFieldView = CardPaymentTextFieldView(viewModel: ExpiryDateTextFieldViewModel())
     private let ccvView: CardPaymentTextFieldView = CardPaymentTextFieldView(viewModel: CCVTextFieldViewModel())
     private let cardHolderView: CardPaymentTextFieldView = CardPaymentTextFieldView(viewModel: CardHolderNameTextFieldViewModel())
+    private let payButton: UIButton = PrimerButton(buttonTitle: "Pay")
 
     private lazy var verticalStackView: UIStackView = {
         let stackView = UIStackView(arrangedSubviews: [
             self.cardNumberView,
             self.horizontalStackView,
             self.cardHolderView,
+            self.payButton
         ])
         stackView.axis = .vertical
         stackView.spacing = .largeSpace
