@@ -41,4 +41,19 @@ final class StringExtensionTests: XCTestCase {
             XCTAssertEqual(string.onlyContainsNumbers, expectedResult, "wrong result for string: \(string), should be: \(expectedResult)")
         }
     }
+
+    func test_remove_whitespace() {
+        // GIVEN
+        let testData: [(string: String, expectedResult: String)] = [
+            ("", ""),
+            ("abc123", "abc123"),
+            ("abc abc", "abcabc"),
+            ("Hello world !", "Helloworld!")
+        ]
+
+        // WHEN
+        testData.forEach { (string: String, expectedResult: String) in
+            XCTAssertEqual(string.removeWhitespaces, expectedResult, "wrong result for string: \(string), should be: \(expectedResult)")
+        }
+    }
 }
