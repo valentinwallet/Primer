@@ -14,6 +14,12 @@ final class PrimerButton: UIButton {
         }
     }
 
+    override var isEnabled: Bool {
+        didSet {
+            self.alpha = isEnabled ? 1 : 0.3
+        }
+    }
+
     init(buttonTitle: String) {
         super.init(frame: .zero)
         self.setTitle(buttonTitle, for: .normal)
@@ -26,6 +32,7 @@ final class PrimerButton: UIButton {
 
     private func configureLayout() {
         self.backgroundColor = .black
+        self.titleLabel?.font = .systemFont(ofSize: 16, weight: .bold)
         self.layer.cornerRadius = .smallCornerRadius
         self.translatesAutoresizingMaskIntoConstraints = false
 

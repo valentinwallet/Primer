@@ -7,12 +7,21 @@
 
 import UIKit
 
+protocol CardPaymentViewDelegate: AnyObject {
+    func cardPaymentView(_ view: CardPaymentView, didPressPayButton button: UIButton)
+}
+
 final class CardPaymentView: UIView {
     private let cardNumberView: CardPaymentTextFieldView = CardPaymentTextFieldView(viewModel: CardNumberTextFieldViewModel())
     private let expiryDateView: CardPaymentTextFieldView = CardPaymentTextFieldView(viewModel: ExpiryDateTextFieldViewModel())
     private let ccvView: CardPaymentTextFieldView = CardPaymentTextFieldView(viewModel: CCVTextFieldViewModel())
     private let cardHolderView: CardPaymentTextFieldView = CardPaymentTextFieldView(viewModel: CardHolderNameTextFieldViewModel())
-    private let payButton: UIButton = PrimerButton(buttonTitle: "Pay")
+    private let payButton: UIButton = {
+        let button = PrimerButton(buttonTitle: "Pay")
+        button.isEnabled = false
+        button.addTarget(self, action: #selector(didTapOnPayButton(sender:)), for: .touchDown)
+        return button
+    }()
 
     private lazy var verticalStackView: UIStackView = {
         let stackView = UIStackView(arrangedSubviews: [
@@ -38,6 +47,8 @@ final class CardPaymentView: UIView {
         return stackView
     }()
 
+    weak var delegate: CardPaymentViewDelegate?
+
     override init(frame: CGRect) {
         super.init(frame: frame)
         self.configureLayout()
@@ -56,5 +67,12 @@ final class CardPaymentView: UIView {
             self.verticalStackView.trailingAnchor.constraint(equalTo: self.trailingAnchor),
             self.verticalStackView.bottomAnchor.constraint(equalTo: self.bottomAnchor)
         ])
+    }
+}
+
+extension CardPaymentView {
+    @objc
+    private func didTapOnPayButton(sender: UIButton) {
+        self.delegate?.cardPaymentView(self, didPressPayButton: sender)
     }
 }
