@@ -51,4 +51,20 @@ final class ExpiryDateTextFieldViewModelTests: XCTestCase {
             XCTAssertEqual(textField.text, expectedText, "wrong textfield text")
         }
     }
+
+    func test_validate() {
+        // GIVEN
+        let viewModel = ExpiryDateTextFieldViewModel()
+        let testData: [(text: String, expectedResult: Bool)] = [
+            ("", false),
+            ("12/40", true),
+            ("12/10", false),
+        ]
+
+        // WHEN
+        testData.forEach { (text: String, expectedResult: Bool) in
+            // THEN
+            XCTAssertEqual(viewModel.validate(for: text), expectedResult, "wrong validate value for text: \(text) should be \(expectedResult)")
+        }
+    }
 }

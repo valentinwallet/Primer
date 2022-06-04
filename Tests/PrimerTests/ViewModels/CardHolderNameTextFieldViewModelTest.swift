@@ -25,4 +25,21 @@ final class CardHolderNameTextFieldViewModelTest: XCTestCase {
         // WHEN...THEN
         XCTAssertEqual(viewModel.keyboardType, .default)
     }
+
+    func test_validate() {
+        // GIVEN
+        let viewModel = CardHolderNameTextFieldViewModel()
+        let testData: [(text: String, expectedResult: Bool)] = [
+            ("", false),
+            ("132", false),
+            ("abc123", false),
+            ("John Doe", true)
+        ]
+
+        // WHEN
+        testData.forEach { (text: String, expectedResult: Bool) in
+            // THEN
+            XCTAssertEqual(viewModel.validate(for: text), expectedResult, "wrong validate value for text: \(text) should be \(expectedResult)")
+        }
+    }
 }

@@ -21,6 +21,6 @@ final class CCVTextFieldViewModel: CardPaymentTextFieldViewModel {
     }
 
     func validate(for text: String) -> Bool {
-        return true
+        return text.onlyContainsNumbers
     }
 }

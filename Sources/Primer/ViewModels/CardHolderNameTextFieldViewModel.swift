@@ -12,6 +12,8 @@ final class CardHolderNameTextFieldViewModel: CardPaymentTextFieldViewModel {
     let keyboardType: UIKeyboardType = .default
 
     func validate(for text: String) -> Bool {
-        return true
+        return text
+            .removeWhitespaces
+            .onlyContainsLetters
     }
 }

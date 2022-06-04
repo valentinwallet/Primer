@@ -17,4 +17,8 @@ extension String {
         guard self.count > 0 else { return false }
         return CharacterSet.decimalDigits.isSuperset(of: CharacterSet(charactersIn: self))
     }
+
+    var removeWhitespaces: String {
+        return self.replacingOccurrences(of: " ", with: "")
+    }
 }

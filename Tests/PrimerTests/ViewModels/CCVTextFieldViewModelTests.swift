@@ -49,4 +49,21 @@ final class CCVTextFieldViewModelTests: XCTestCase {
                 "wrong expected result for textField current text: \(textFieldCurrentText), replacementString: \(replacementString), range: \(range) ")
         }
     }
+
+    func test_validate() {
+        // GIVEN
+        let viewModel = CCVTextFieldViewModel()
+        let testData: [(text: String, expectedResult: Bool)] = [
+            ("", false),
+            ("abc", false),
+            ("123d", false),
+            ("123", true)
+        ]
+
+        // WHEN
+        testData.forEach { (text: String, expectedResult: Bool) in
+            // THEN
+            XCTAssertEqual(viewModel.validate(for: text), expectedResult, "wrong validate value for text: \(text) should be \(expectedResult)")
+        }
+    }
 }
