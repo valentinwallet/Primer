@@ -19,4 +19,8 @@ final class CCVTextFieldViewModel: CardPaymentTextFieldViewModel {
 
         return updatedTextFieldText.count < 5
     }
+
+    func validate(for text: String) -> Bool {
+        return true
+    }
 }

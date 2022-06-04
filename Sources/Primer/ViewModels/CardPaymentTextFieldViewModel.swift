@@ -12,6 +12,7 @@ protocol CardPaymentTextFieldViewModel: AnyObject {
     var keyboardType: UIKeyboardType { get }
 
     func shouldChangeCharacters(textField: UITextField, range: NSRange, replacementString: String) -> Bool
+    func validate(for text: String) -> Bool
 }
 
 extension CardPaymentTextFieldViewModel {

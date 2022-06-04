@@ -38,4 +38,8 @@ final class ExpiryDateTextFieldViewModel: CardPaymentTextFieldViewModel {
 
         return true
     }
+
+    func validate(for text: String) -> Bool {
+        return true
+    }
 }

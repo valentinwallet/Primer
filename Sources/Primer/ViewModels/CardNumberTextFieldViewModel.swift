@@ -10,4 +10,8 @@ import UIKit
 final class CardNumberTextFieldViewModel: CardPaymentTextFieldViewModel {
     let title: String = "Card Number"
     let keyboardType: UIKeyboardType = .numberPad
+
+    func validate(for text: String) -> Bool {
+        return true
+    }
 }

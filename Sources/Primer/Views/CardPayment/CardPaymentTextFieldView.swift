@@ -7,7 +7,11 @@
 
 import UIKit
 
-final class CardPaymentTextFieldView: UIView {
+protocol CardPaymentTextFieldViewDelegate: AnyObject {
+    func cardPaymentTextFieldViewDidEndEditing(_ view: CardPaymentTextFieldView)
+}
+
+final class CardPaymentTextFieldView: CardPaymentBaseTextFieldView {
     private lazy var titleLabel: UILabel = {
         let label = UILabel()
         label.text = self.viewModel.title
@@ -16,7 +20,7 @@ final class CardPaymentTextFieldView: UIView {
         return label
     }()
 
-    private lazy var textField: UITextField = {
+    private(set) lazy var textField: UITextField = {
         let textField = PrimerTextField()
         textField.backgroundColor = .systemGray6
         textField.delegate = self
@@ -26,7 +30,9 @@ final class CardPaymentTextFieldView: UIView {
         return textField
     }()
 
-    private let viewModel: CardPaymentTextFieldViewModel
+    private(set) var viewModel: CardPaymentTextFieldViewModel
+
+    weak var delegate: CardPaymentTextFieldViewDelegate?
 
     init(viewModel: CardPaymentTextFieldViewModel) {
         self.viewModel = viewModel
@@ -80,9 +86,6 @@ extension CardPaymentTextFieldView: UITextFieldDelegate {
 
     func textFieldDidEndEditing(_ textField: UITextField, reason: UITextField.DidEndEditingReason) {
         self.textField.layer.borderWidth = 0
-    }
-
-    func textFieldDidEndEditing(_ textField: UITextField) {
-        self.textField.layer.borderWidth = 0
+        self.delegate?.cardPaymentTextFieldViewDidEndEditing(self)
     }
 }

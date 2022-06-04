@@ -12,10 +12,30 @@ protocol CardPaymentViewDelegate: AnyObject {
 }
 
 final class CardPaymentView: UIView {
-    private let cardNumberView: CardPaymentTextFieldView = CardPaymentTextFieldView(viewModel: CardNumberTextFieldViewModel())
-    private let expiryDateView: CardPaymentTextFieldView = CardPaymentTextFieldView(viewModel: ExpiryDateTextFieldViewModel())
-    private let ccvView: CardPaymentTextFieldView = CardPaymentTextFieldView(viewModel: CCVTextFieldViewModel())
-    private let cardHolderView: CardPaymentTextFieldView = CardPaymentTextFieldView(viewModel: CardHolderNameTextFieldViewModel())
+    private lazy var cardNumberView: CardPaymentBaseTextFieldView = {
+        let view = CardPaymentTextFieldView(viewModel: CardNumberTextFieldViewModel())
+        view.delegate = self
+        return view
+    }()
+
+    private lazy var expiryDateView: CardPaymentBaseTextFieldView = {
+        let view = CardPaymentTextFieldView(viewModel: ExpiryDateTextFieldViewModel())
+        view.delegate = self
+        return view
+    }()
+
+    private lazy var ccvView: CardPaymentBaseTextFieldView = {
+        let view = CardPaymentTextFieldView(viewModel: CCVTextFieldViewModel())
+        view.delegate = self
+        return view
+    }()
+
+    private lazy var cardHolderView: CardPaymentBaseTextFieldView = {
+        let view = CardPaymentTextFieldView(viewModel: CardHolderNameTextFieldViewModel())
+        view.delegate = self
+        return view
+    }()
+
     private let payButton: UIButton = {
         let button = PrimerButton(buttonTitle: "Pay")
         button.isEnabled = false
@@ -70,9 +90,25 @@ final class CardPaymentView: UIView {
     }
 }
 
+// MARK: - Actions
+
 extension CardPaymentView {
     @objc
     private func didTapOnPayButton(sender: UIButton) {
         self.delegate?.cardPaymentView(self, didPressPayButton: sender)
+    }
+}
+
+
+extension CardPaymentView: CardPaymentTextFieldViewDelegate {
+    func cardPaymentTextFieldViewDidEndEditing(_ view: CardPaymentTextFieldView) {
+        if self.cardNumberView.validate(),
+           self.expiryDateView.validate(),
+           self.ccvView.validate(),
+           self.cardHolderView.validate() {
+            self.payButton.isEnabled = true
+        } else {
+            self.payButton.isEnabled = false
+        }
     }
 }
