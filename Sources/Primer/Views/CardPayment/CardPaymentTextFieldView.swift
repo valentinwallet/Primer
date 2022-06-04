@@ -16,6 +16,7 @@ final class CardPaymentTextFieldView: CardPaymentBaseTextFieldView {
         let label = UILabel()
         label.text = self.viewModel.title
         label.font = .systemFont(ofSize: 16, weight: .semibold)
+        label.textColor = .label
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
@@ -81,11 +82,17 @@ extension CardPaymentTextFieldView: UITextFieldDelegate {
 
     func textFieldDidBeginEditing(_ textField: UITextField) {
         self.textField.layer.borderWidth = 1
-        self.textField.layer.borderColor = UIColor.black.cgColor
+        self.textField.layer.borderColor = UIColor.systemBackgroundInverted.cgColor
     }
 
     func textFieldDidEndEditing(_ textField: UITextField, reason: UITextField.DidEndEditingReason) {
         self.textField.layer.borderWidth = 0
         self.delegate?.cardPaymentTextFieldViewDidEndEditing(self)
+    }
+
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        self.textField.resignFirstResponder()
+        self.delegate?.cardPaymentTextFieldViewDidEndEditing(self)
+        return false
     }
 }

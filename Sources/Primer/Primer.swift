@@ -9,7 +9,9 @@ import UIKit
 
 public struct Primer {
     public init() {}
-    
+
+    /// Build a UIViewController used for checkout with multiple payments methods
+    /// - Returns: UIViewController
     public static func build() -> UIViewController {
         return PrimerCheckoutViewController()
     }

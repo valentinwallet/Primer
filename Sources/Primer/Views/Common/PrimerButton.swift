@@ -31,9 +31,10 @@ final class PrimerButton: UIButton {
     }
 
     private func configureLayout() {
-        self.backgroundColor = .black
+        self.backgroundColor = .systemBackgroundInverted
         self.titleLabel?.font = .systemFont(ofSize: 16, weight: .bold)
         self.layer.cornerRadius = .smallCornerRadius
+        self.setTitleColor(.systemBackground, for: .normal)
         self.translatesAutoresizingMaskIntoConstraints = false
 
         NSLayoutConstraint.activate([

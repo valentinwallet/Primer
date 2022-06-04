@@ -23,7 +23,7 @@ final class PrimerCheckoutViewController: UIViewController {
     }
 
     private func configureLayout() {
-        self.view.backgroundColor = .white
+        self.view.backgroundColor = .systemBackground
 
         self.configurePaymentMethodStackView()
     }
