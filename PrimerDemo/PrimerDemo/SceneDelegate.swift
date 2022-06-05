@@ -14,7 +14,11 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         guard let windowScene = (scene as? UIWindowScene) else { return }
 
-        let primerCheckoutViewController = Primer.build()
+        let primerCheckoutViewController = Primer
+            .checkoutBuilder()
+            .payButtonImage(UIImage(systemName: "creditcard"))
+            .payButtonTitle("Pay with card")
+            .build()
 
         self.window = UIWindow(frame: windowScene.coordinateSpace.bounds)
         self.window?.windowScene = windowScene

@@ -36,8 +36,15 @@ final class CardPaymentView: UIView {
         return view
     }()
 
-    private let payButton: UIButton = {
-        let button = PrimerButton(buttonTitle: "Pay")
+    private lazy var payButton: UIButton = {
+        // TODO: pay title from viewModel
+        let configuration = self.viewModel.configuration
+        let button = PrimerButton(buttonTitle: configuration.payButtonTitle)
+        button.setImage(configuration.payButtonImage, for: .normal)
+        button.setTitleColor(configuration.payButtonTitleColor, for: .normal)
+        button.layer.cornerRadius = configuration.payButtonCornerRadius
+        button.backgroundColor = configuration.payButtonBackgroundColor
+//        button.tintColor = configuration.payButtonTitleColor
         button.isEnabled = false
         button.addTarget(self, action: #selector(didTapOnPayButton(sender:)), for: .touchDown)
         return button
@@ -69,8 +76,11 @@ final class CardPaymentView: UIView {
 
     weak var delegate: CardPaymentViewDelegate?
 
-    override init(frame: CGRect) {
-        super.init(frame: frame)
+    private let viewModel: CardPaymentViewModel
+
+    init(viewModel: CardPaymentViewModel) {
+        self.viewModel = viewModel
+        super.init(frame: .zero)
         self.configureLayout()
     }
 

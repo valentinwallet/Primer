@@ -22,8 +22,10 @@ final class PrimerButton: UIButton {
 
     init(buttonTitle: String) {
         super.init(frame: .zero)
-        self.setTitle(buttonTitle, for: .normal)
         self.configureLayout()
+        self.setTitle(buttonTitle, for: .normal)
+        self.imageEdgeInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: .mediumSpace)
+        self.tintColor = .systemBackground
     }
 
     required init?(coder: NSCoder) {
@@ -31,10 +33,7 @@ final class PrimerButton: UIButton {
     }
 
     private func configureLayout() {
-        self.backgroundColor = .systemBackgroundInverted
         self.titleLabel?.font = .systemFont(ofSize: 16, weight: .bold)
-        self.layer.cornerRadius = .smallCornerRadius
-        self.setTitleColor(.systemBackground, for: .normal)
         self.translatesAutoresizingMaskIntoConstraints = false
 
         NSLayoutConstraint.activate([

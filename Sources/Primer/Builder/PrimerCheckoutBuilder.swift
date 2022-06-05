@@ -9,29 +9,63 @@ import UIKit
 
 struct PrimerCheckoutBuilderConfiguration {
     var payButtonCornerRadius: CGFloat = .smallCornerRadius
-    var payButtonColor: UIColor = .systemBackgroundInverted
+    var payButtonBackgroundColor: UIColor = .systemBackgroundInverted
     var payButtonImage: UIImage?
+    var payButtonTitle: String = "Pay"
+    var payButtonTitleColor: UIColor = .systemBackground
 }
 
-public final class PrimerCheckoutBuilder {
-    private var configuration: PrimerCheckoutBuilderConfiguration = PrimerCheckoutBuilderConfiguration()
+public enum PrimerPaymentMethod {
+    case card
+}
 
-    func payButtonCornerRadius(cornerRadius: CGFloat) -> Self {
-        self.configuration.payButtonCornerRadius = cornerRadius
-        return self
-    }
-
-    func payButtonColor(color: UIColor) -> Self {
-        self.configuration.payButtonColor = color
-        return self
-    }
-
-    func payButtonImage(image: UIImage) -> Self {
-        self.configuration.payButtonImage = image
-        return self
-    }
-
-    func build() -> UIViewController {
-        return UIViewController()
+public enum Primer {
+    public static func checkoutBuilder() -> Primer.CheckoutBuilder {
+        return CheckoutBuilder()
     }
 }
+
+extension Primer {
+    public final class CheckoutBuilder {
+        private var configuration: PrimerCheckoutBuilderConfiguration = PrimerCheckoutBuilderConfiguration()
+        private var paymentMethods: [PrimerPaymentMethod] = [.card]
+
+        public func payButtonCornerRadius(_ cornerRadius: CGFloat) -> Self {
+            self.configuration.payButtonCornerRadius = cornerRadius
+            return self
+        }
+
+        public func payButtonColor(_ color: UIColor) -> Self {
+            self.configuration.payButtonBackgroundColor = color
+            return self
+        }
+
+        public func payButtonImage(_ image: UIImage?) -> Self {
+            self.configuration.payButtonImage = image
+            return self
+        }
+
+        public func payButtonTitle(_ title: String) -> Self {
+            self.configuration.payButtonTitle = title
+            return self
+        }
+
+        public func payButtonTitleColor(_ color: UIColor) -> Self {
+            self.configuration.payButtonTitleColor = color
+            return self
+        }
+
+        public func addPaymentMethod(_ paymentMethod: PrimerPaymentMethod) -> Self {
+            if !self.paymentMethods.contains(paymentMethod) {
+                self.paymentMethods.append(paymentMethod)
+            }
+            return self
+        }
+
+        public func build() -> UIViewController {
+            let viewModel = PrimerCheckoutViewModel(configuration: self.configuration, paymentMethods: self.paymentMethods)
+            return PrimerCheckoutViewController(viewModel: viewModel)
+        }
+    }
+}
+
