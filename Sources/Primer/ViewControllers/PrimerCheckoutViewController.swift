@@ -9,12 +9,16 @@ import UIKit
 
 final class PrimerCheckoutViewController: UIViewController {
     private let paymentMethodStackView: UIStackView = {
-        let stackView = UIStackView(arrangedSubviews: [
-            CardPaymentView()
-        ])
+        let stackView = UIStackView()
         stackView.axis = .vertical
         stackView.translatesAutoresizingMaskIntoConstraints = false
         return stackView
+    }()
+
+    private lazy var cardPaymentView: CardPaymentView = {
+        let cardPaymentView = CardPaymentView()
+        cardPaymentView.delegate = self
+        return cardPaymentView
     }()
 
     override func viewDidLoad() {
@@ -31,10 +35,17 @@ final class PrimerCheckoutViewController: UIViewController {
     private func configurePaymentMethodStackView() {
         self.view.addSubview(self.paymentMethodStackView)
 
+        self.paymentMethodStackView.addArrangedSubview(self.cardPaymentView)
+
         NSLayoutConstraint.activate([
             self.paymentMethodStackView.topAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor, constant: .largeSpace),
             self.paymentMethodStackView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: .largeSpace),
             self.paymentMethodStackView.trailingAnchor.constraint(equalTo: self.view.trailingAnchor, constant: -.largeSpace)
         ])
+    }
+}
+
+extension PrimerCheckoutViewController: CardPaymentViewDelegate {
+    func cardPaymentView(_ view: CardPaymentView, didPressPayButton button: UIButton) {
     }
 }
