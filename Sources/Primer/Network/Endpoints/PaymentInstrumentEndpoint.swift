@@ -8,17 +8,26 @@
 import Foundation
 
 struct PaymentInstrumentEndpoint: Endpoint {
+    let baseURL: String = "https://sdk.api.staging.primer.io"
     let path: String = "/payment-instruments"
     let method: HTTPMethod = .post
     var header: [String: String]?
-    var body: Data? = nil
+    var body: [String: Any]?
 
-    init(accessToken: String, paymentInstrument: PaymentInstrument) {
+    init(accessToken: String, cardDetails: CardDetails) {
         self.header = [
-            "Primer-Client-Token": accessToken,
-            "Content-Type": "Content-Type: application/json"
+            "Content-Type": "application/json",
+            "Primer-Client-Token": accessToken
         ]
         
-        self.body = try? JSONEncoder().encode(paymentInstrument)
+        self.body = [
+            "paymentInstrument": [
+                "number": cardDetails.number,
+                "cvv": cardDetails.cvv,
+                "expirationMonth": cardDetails.expirationMonth,
+                "expirationYear": cardDetails.expirationYear,
+                "cardholderName": cardDetails.cardholderName
+            ]
+        ]
     }
 }

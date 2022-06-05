@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import JWTDecode
 
 final class PrimerCheckoutViewController: UIViewController {
     private let paymentMethodStackView: UIStackView = {
@@ -17,7 +18,6 @@ final class PrimerCheckoutViewController: UIViewController {
 
     private lazy var cardPaymentView: CardPaymentView = {
         let cardPaymentView = CardPaymentView()
-        cardPaymentView.delegate = self
         return cardPaymentView
     }()
 
@@ -42,10 +42,5 @@ final class PrimerCheckoutViewController: UIViewController {
             self.paymentMethodStackView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: .largeSpace),
             self.paymentMethodStackView.trailingAnchor.constraint(equalTo: self.view.trailingAnchor, constant: -.largeSpace)
         ])
-    }
-}
-
-extension PrimerCheckoutViewController: CardPaymentViewDelegate {
-    func cardPaymentView(_ view: CardPaymentView, didPressPayButton button: UIButton) {
     }
 }

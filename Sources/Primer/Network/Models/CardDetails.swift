@@ -5,15 +5,7 @@
 //  Created by Valentin Wallet on 6/5/22.
 //
 
-struct PaymentInstrument: Encodable {
-    let cardDetails: CardDetails
-
-    enum CodingKeys: String, CodingKey {
-        case cardDetails = "paymentInstrument"
-    }
-}
-
-struct CardDetails: Encodable {
+struct CardDetails {
     let number: String
     let cvv: String
     let expirationMonth: String

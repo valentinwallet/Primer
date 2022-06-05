@@ -29,7 +29,7 @@ final class PrimerAPIClient: PrimerAPIClientProtocol {
         request.allHTTPHeaderFields = endpoint.header
 
         if let body = endpoint.body {
-            request.httpBody = body
+            request.httpBody = try? JSONSerialization.data(withJSONObject: body)
         }
 
         urlSession.dataTask(with: request) { data, response, error in
@@ -45,7 +45,10 @@ final class PrimerAPIClient: PrimerAPIClientProtocol {
 
             switch response.statusCode {
             case 200...299:
-                guard let decodedModel = try? JSONDecoder().decode(model, from: data) else {
+                // TODO: Fix that
+                let jsonDecoder = JSONDecoder()
+                jsonDecoder.dateDecodingStrategy = .formatted(.milliseconds)
+                guard let decodedModel = try? jsonDecoder.decode(model, from: data) else {
                     completion(.failure(.decode))
                     return
                 }

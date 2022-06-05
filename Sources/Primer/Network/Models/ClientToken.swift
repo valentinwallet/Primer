@@ -5,7 +5,9 @@
 //  Created by Valentin Wallet on 6/5/22.
 //
 
-struct ClientToken: Decodable {
+import Foundation
+
+struct ClientToken: Codable {
     let clientToken: String
-    let expirationDate: String
+    let expirationDate: Date
 }

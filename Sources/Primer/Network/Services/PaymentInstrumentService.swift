@@ -14,8 +14,8 @@ final class PaymentInstrumentService {
         self.primerAPIClient = primerAPIClient
     }
 
-    func getPaymentToken(for accessToken: String, paymentInstrument: PaymentInstrument, completion: @escaping (Result<PaymentInstrumentResponse, PrimerAPIError>) -> Void) {
-        self.primerAPIClient.sendRequest(endpoint: PaymentInstrumentEndpoint(accessToken: accessToken, paymentInstrument: paymentInstrument), model: PaymentInstrumentResponse.self) { result in
+    func getPaymentToken(for accessToken: String, cardDetails: CardDetails, completion: @escaping (Result<PaymentInstrumentResponse, PrimerAPIError>) -> Void) {
+        self.primerAPIClient.sendRequest(endpoint: PaymentInstrumentEndpoint(accessToken: accessToken, cardDetails: cardDetails), model: PaymentInstrumentResponse.self) { result in
             completion(result)
         }
     }

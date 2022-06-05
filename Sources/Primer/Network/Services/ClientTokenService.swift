@@ -13,14 +13,46 @@ protocol ClientTokenServiceProtocol: AnyObject {
 
 final class ClientTokenService: ClientTokenServiceProtocol {
     private let primerAPIClient: PrimerAPIClientProtocol
+    private let userDefaults: UserDefaults
+    private let clientTokenKey: String = "ClientToken"
 
-    init(primerAPIClient: PrimerAPIClientProtocol = PrimerAPIClient()) {
+    init(primerAPIClient: PrimerAPIClientProtocol = PrimerAPIClient(),
+         userDefaults: UserDefaults = .standard) {
         self.primerAPIClient = primerAPIClient
+        self.userDefaults = userDefaults
     }
 
     func getClientToken(completion: @escaping (Result<ClientToken, PrimerAPIError>) -> Void) {
-        self.primerAPIClient.sendRequest(endpoint: ClientTokenEndpoint(), model: ClientToken.self) { result in
-            completion(result)
+        if let token = self.getValidToken() {
+            completion(.success(token))
+        } else {
+            self.primerAPIClient.sendRequest(endpoint: ClientTokenEndpoint(), model: ClientToken.self) { result in
+                if case .success(let token) = result {
+                    self.store(clientToken: token)
+                }
+                completion(result)
+            }
         }
+    }
+
+    func store(clientToken: ClientToken) {
+        let jsonEncoder = JSONEncoder()
+        jsonEncoder.dateEncodingStrategy = .formatted(.milliseconds)
+        let encodedToken = try? jsonEncoder.encode(clientToken)
+        self.userDefaults.set(encodedToken, forKey: "ClientToken")
+    }
+
+    func getValidToken() -> ClientToken? {
+        guard let clientTokenData = self.userDefaults.data(forKey: self.clientTokenKey) else {
+            return nil
+        }
+
+        let jsonDecoder = JSONDecoder()
+        jsonDecoder.dateDecodingStrategy = .formatted(.milliseconds)
+        guard let token = try? jsonDecoder.decode(ClientToken.self, from: clientTokenData) else {
+            return nil
+        }
+
+        return token.expirationDate > Date() ? token : nil
     }
 }
