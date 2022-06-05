@@ -14,7 +14,7 @@ protocol ClientTokenServiceProtocol: AnyObject {
 final class ClientTokenService: ClientTokenServiceProtocol {
     private let primerAPIClient: PrimerAPIClientProtocol
     private let userDefaults: UserDefaults
-    private let clientTokenKey: String = "ClientToken"
+    private let userDefaultsTokenKey: String = "ClientToken"
 
     init(primerAPIClient: PrimerAPIClientProtocol = PrimerAPIClient(),
          userDefaults: UserDefaults = .standard) {
@@ -35,21 +35,19 @@ final class ClientTokenService: ClientTokenServiceProtocol {
         }
     }
 
-    func store(clientToken: ClientToken) {
+    private func store(clientToken: ClientToken) {
         let jsonEncoder = JSONEncoder()
         jsonEncoder.dateEncodingStrategy = .formatted(.milliseconds)
         let encodedToken = try? jsonEncoder.encode(clientToken)
         self.userDefaults.set(encodedToken, forKey: "ClientToken")
     }
 
-    func getValidToken() -> ClientToken? {
-        guard let clientTokenData = self.userDefaults.data(forKey: self.clientTokenKey) else {
+    private func getValidToken() -> ClientToken? {
+        guard let clientTokenData = self.userDefaults.data(forKey: self.userDefaultsTokenKey) else {
             return nil
         }
 
-        let jsonDecoder = JSONDecoder()
-        jsonDecoder.dateDecodingStrategy = .formatted(.milliseconds)
-        guard let token = try? jsonDecoder.decode(ClientToken.self, from: clientTokenData) else {
+        guard let token = try? PrimerJSONDecoder().decode(ClientToken.self, from: clientTokenData) else {
             return nil
         }
 

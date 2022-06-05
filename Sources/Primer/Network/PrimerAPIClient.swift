@@ -45,10 +45,7 @@ final class PrimerAPIClient: PrimerAPIClientProtocol {
 
             switch response.statusCode {
             case 200...299:
-                // TODO: Fix that
-                let jsonDecoder = JSONDecoder()
-                jsonDecoder.dateDecodingStrategy = .formatted(.milliseconds)
-                guard let decodedModel = try? jsonDecoder.decode(model, from: data) else {
+                guard let decodedModel = try? PrimerJSONDecoder().decode(model, from: data) else {
                     completion(.failure(.decode))
                     return
                 }
