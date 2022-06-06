@@ -8,5 +8,5 @@
 import Foundation
 
 struct CardPaymentViewModel {
-    let configuration: PrimerCheckoutBuilderConfiguration
+    let configuration: CheckoutBuilderConfiguration
 }

@@ -1,5 +1,5 @@
 //
-//  File.swift
+//  PaymentInstrumentServiceTests.swift
 //  
 //
 //  Created by Valentin Wallet on 6/6/22.
@@ -9,13 +9,12 @@ import XCTest
 @testable import Primer
 
 final class PaymentInstrumentServiceTests: XCTestCase {
-    func test_get_payment_token_send_request_endpoint() {
+    func test_get_payment_token_send_request_is_called() {
         // GIVEN
         let primerAPIClientMockService = PrimerAPIClientMock<PaymentInstrumentResponse>()
         let service = PaymentInstrumentService(primerAPIClient: primerAPIClientMockService)
         let sendRequestExpectation = self.expectation(description: "should call sendRequest()")
 
-        primerAPIClientMockService.decodableObject = PaymentInstrumentResponse(token: "token")
         primerAPIClientMockService.sendRequestExpectation = sendRequestExpectation
 
         // WHEN
@@ -23,6 +22,17 @@ final class PaymentInstrumentServiceTests: XCTestCase {
 
         // THEN
         self.wait(for: [sendRequestExpectation], timeout: 0.1)
+    }
+
+    func test_get_payment_token_send_request_endpoint() {
+        // GIVEN
+        let primerAPIClientMockService = PrimerAPIClientMock<PaymentInstrumentResponse>()
+        let service = PaymentInstrumentService(primerAPIClient: primerAPIClientMockService)
+
+        // WHEN
+        service.getPaymentToken(for: "accessToken", cardDetails: .mock()) { _ in }
+
+        // THEN
         XCTAssertTrue(primerAPIClientMockService.endpoint is PaymentInstrumentEndpoint)
     }
 
@@ -30,13 +40,12 @@ final class PaymentInstrumentServiceTests: XCTestCase {
         // GIVEN
         let primerAPIClientMockService = PrimerAPIClientMock<PaymentInstrumentResponse>()
         let service = PaymentInstrumentService(primerAPIClient: primerAPIClientMockService)
-        let sendRequestExpectation = self.expectation(description: "should call sendRequest()")
 
         primerAPIClientMockService.decodableObject = PaymentInstrumentResponse(token: "token")
-        primerAPIClientMockService.sendRequestExpectation = sendRequestExpectation
 
         // WHEN
         service.getPaymentToken(for: "accessToken", cardDetails: .mock()) { result in
+            // THEN
             switch result {
             case .success(let response):
                 XCTAssertEqual(response.token, "token")
@@ -44,30 +53,22 @@ final class PaymentInstrumentServiceTests: XCTestCase {
                 XCTFail("should not be a failure")
             }
         }
-
-        // THEN
-        self.wait(for: [sendRequestExpectation], timeout: 0.1)
     }
 
     func test_get_payment_token_failure() {
         // GIVEN
         let primerAPIClientMockService = PrimerAPIClientMock<PaymentInstrumentResponse>()
         let service = PaymentInstrumentService(primerAPIClient: primerAPIClientMockService)
-        let sendRequestExpectation = self.expectation(description: "should call sendRequest()")
-
-        primerAPIClientMockService.sendRequestExpectation = sendRequestExpectation
 
         // WHEN
         service.getPaymentToken(for: "accessToken", cardDetails: .mock()) { result in
+            // THEN
             switch result {
-            case .success(let response):
+            case .success(_):
                 XCTFail("should not be a success")
             case .failure(let error):
                 XCTAssertEqual(error, .unknown, "wrong error type")
             }
         }
-
-        // THEN
-        self.wait(for: [sendRequestExpectation], timeout: 0.1)
     }
 }

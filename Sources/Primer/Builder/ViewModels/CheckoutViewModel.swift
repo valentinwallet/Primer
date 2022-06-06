@@ -1,5 +1,5 @@
 //
-//  PrimerCheckoutViewModel.swift
+//  CheckoutViewModel.swift
 //  
 //
 //  Created by Valentin Wallet on 6/5/22.
@@ -7,11 +7,11 @@
 
 import UIKit
 
-final class PrimerCheckoutViewModel {
-    let configuration: PrimerCheckoutBuilderConfiguration
-    let paymentMethods: [PrimerPaymentMethod]
+final class CheckoutViewModel {
+    private(set) var configuration: CheckoutBuilderConfiguration
+    private(set) var paymentMethods: [PaymentMethod]
 
-    init(configuration: PrimerCheckoutBuilderConfiguration, paymentMethods: [PrimerPaymentMethod]) {
+    init(configuration: CheckoutBuilderConfiguration, paymentMethods: [PaymentMethod]) {
         self.configuration = configuration
         self.paymentMethods = paymentMethods
     }
@@ -26,7 +26,7 @@ final class PrimerCheckoutViewModel {
         return views
     }
 
-    private func getPaymentMethodView(for paymentMethod: PrimerPaymentMethod) -> UIView {
+    private func getPaymentMethodView(for paymentMethod: PaymentMethod) -> UIView {
         switch paymentMethod {
         case .card:
             let viewModel = CardPaymentViewModel(configuration: self.configuration)

@@ -6,9 +6,8 @@
 //
 
 import UIKit
-import JWTDecode
 
-final class PrimerCheckoutViewController: UIViewController {
+final class CheckoutViewController: UIViewController {
     private let scrollView: UIScrollView = {
         let scrollView = UIScrollView()
         scrollView.translatesAutoresizingMaskIntoConstraints = false
@@ -25,9 +24,9 @@ final class PrimerCheckoutViewController: UIViewController {
         return stackView
     }()
 
-    private let viewModel: PrimerCheckoutViewModel
+    private let viewModel: CheckoutViewModel
 
-    init(viewModel: PrimerCheckoutViewModel) {
+    init(viewModel: CheckoutViewModel) {
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
     }
