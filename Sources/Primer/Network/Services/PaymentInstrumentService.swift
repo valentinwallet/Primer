@@ -7,7 +7,11 @@
 
 import Foundation
 
-final class PaymentInstrumentService {
+protocol PaymentInstrumentServiceProtocol: AnyObject {
+    func getPaymentToken(for accessToken: String, cardDetails: CardDetails, completion: @escaping (Result<PaymentInstrumentResponse, PrimerAPIError>) -> Void)
+}
+
+final class PaymentInstrumentService: PaymentInstrumentServiceProtocol {
     private let primerAPIClient: PrimerAPIClientProtocol
 
     init(primerAPIClient: PrimerAPIClientProtocol = PrimerAPIClient()) {

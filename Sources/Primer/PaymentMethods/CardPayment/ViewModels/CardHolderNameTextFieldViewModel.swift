@@ -16,4 +16,8 @@ final class CardHolderNameTextFieldViewModel: CardPaymentTextFieldViewModel {
             .removeWhitespaces
             .onlyContainsLetters
     }
+
+    func format(textFieldText text: String) -> String {
+        return text.trimmingCharacters(in: .whitespaces)
+    }
 }

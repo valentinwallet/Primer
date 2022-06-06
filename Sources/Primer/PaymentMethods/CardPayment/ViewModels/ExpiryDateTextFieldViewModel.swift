@@ -40,7 +40,19 @@ final class ExpiryDateTextFieldViewModel: CardPaymentTextFieldViewModel {
     }
 
     func validate(for text: String) -> Bool {
-        guard let expiryDate = DateFormatter.cardExpiryDate.date(from: text) else { return false }
+        guard let expiryDate = DateFormatter.cardExpiryDateFormatter.date(from: text) else { return false }
         return expiryDate > Date()
+    }
+
+    func expiryYear(textFieldText text: String) -> String {
+        guard let expiryDate = DateFormatter.cardExpiryDateFormatter.date(from: text) else { return "" }
+
+        return DateFormatter.yearFormatter.string(from: expiryDate)
+    }
+
+    func expiryMonth(textFieldText text: String) -> String {
+        guard let expiryDate = DateFormatter.cardExpiryDateFormatter.date(from: text) else { return "" }
+
+        return DateFormatter.monthFormatter.string(from: expiryDate)
     }
 }

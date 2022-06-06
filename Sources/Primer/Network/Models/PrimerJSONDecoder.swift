@@ -10,6 +10,6 @@ import Foundation
 final class PrimerJSONDecoder: JSONDecoder {
     override init() {
         super.init()
-        self.dateDecodingStrategy = .formatted(.milliseconds)
+        self.dateDecodingStrategy = .formatted(.millisecondsFormatter)
     }
 }

@@ -37,7 +37,7 @@ final class ClientTokenService: ClientTokenServiceProtocol {
 
     private func store(clientToken: ClientToken) {
         let jsonEncoder = JSONEncoder()
-        jsonEncoder.dateEncodingStrategy = .formatted(.milliseconds)
+        jsonEncoder.dateEncodingStrategy = .formatted(.millisecondsFormatter)
         let encodedToken = try? jsonEncoder.encode(clientToken)
         self.userDefaults.set(encodedToken, forKey: "ClientToken")
     }

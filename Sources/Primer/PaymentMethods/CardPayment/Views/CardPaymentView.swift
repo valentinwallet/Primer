@@ -7,11 +7,7 @@
 
 import UIKit
 
-protocol CardPaymentViewDelegate: AnyObject {
-    func cardPaymentView(_ view: CardPaymentView, didPressPayButton button: UIButton)
-}
-
-final class CardPaymentView: UIView {
+final class CardPaymentView: PaymentView {
     private lazy var cardNumberView: CardPaymentBaseTextFieldView = {
         let view = CardPaymentTextFieldView(viewModel: CardNumberTextFieldViewModel())
         view.delegate = self
@@ -24,27 +20,26 @@ final class CardPaymentView: UIView {
         return view
     }()
 
-    private lazy var ccvView: CardPaymentBaseTextFieldView = {
+    private lazy var cvvView: CardPaymentBaseTextFieldView = {
         let view = CardPaymentTextFieldView(viewModel: CCVTextFieldViewModel())
         view.delegate = self
         return view
     }()
 
-    private lazy var cardHolderView: CardPaymentBaseTextFieldView = {
+    private lazy var cardHoldernameView: CardPaymentBaseTextFieldView = {
         let view = CardPaymentTextFieldView(viewModel: CardHolderNameTextFieldViewModel())
         view.delegate = self
         return view
     }()
 
     private lazy var payButton: UIButton = {
-        // TODO: pay title from viewModel
         let configuration = self.viewModel.configuration
         let button = PrimerButton(buttonTitle: configuration.payButtonTitle)
         button.setImage(configuration.payButtonImage, for: .normal)
         button.setTitleColor(configuration.payButtonTitleColor, for: .normal)
         button.layer.cornerRadius = configuration.payButtonCornerRadius
         button.backgroundColor = configuration.payButtonBackgroundColor
-//        button.tintColor = configuration.payButtonTitleColor
+        button.tintColor = configuration.payButtonTitleColor
         button.isEnabled = false
         button.addTarget(self, action: #selector(didTapOnPayButton(sender:)), for: .touchDown)
         return button
@@ -54,7 +49,7 @@ final class CardPaymentView: UIView {
         let stackView = UIStackView(arrangedSubviews: [
             self.cardNumberView,
             self.horizontalStackView,
-            self.cardHolderView,
+            self.cardHoldernameView,
             self.payButton
         ])
         stackView.axis = .vertical
@@ -66,7 +61,7 @@ final class CardPaymentView: UIView {
     private lazy var horizontalStackView: UIStackView = {
         let stackView = UIStackView(arrangedSubviews: [
             self.expiryDateView,
-            self.ccvView
+            self.cvvView
         ])
         stackView.axis = .horizontal
         stackView.spacing = .extraLargeSpace
@@ -74,7 +69,7 @@ final class CardPaymentView: UIView {
         return stackView
     }()
 
-    weak var delegate: CardPaymentViewDelegate?
+    weak var delegate: PaymentViewDelegate?
 
     private let viewModel: CardPaymentViewModel
 
@@ -105,7 +100,12 @@ final class CardPaymentView: UIView {
 extension CardPaymentView {
     @objc
     private func didTapOnPayButton(sender: UIButton) {
-        self.delegate?.cardPaymentView(self, didPressPayButton: sender)
+        let cardDetails = CardDetails(number: self.cardNumberView.textFieldText(),
+                                      cvv: self.cvvView.textFieldText(),
+                                      expirationMonth: self.expiryDateView.expirationMonth(),
+                                      expirationYear: self.expiryDateView.expirationYear(),
+                                      cardholderName: self.cardHoldernameView.textFieldText())
+        self.viewModel.initiatePayment(for: cardDetails)
     }
 }
 
@@ -114,8 +114,8 @@ extension CardPaymentView: CardPaymentTextFieldViewDelegate {
     func cardPaymentTextFieldViewDidEndEditing(_ view: CardPaymentTextFieldView) {
         if self.cardNumberView.validate(),
            self.expiryDateView.validate(),
-           self.ccvView.validate(),
-           self.cardHolderView.validate() {
+           self.cvvView.validate(),
+           self.cardHoldernameView.validate() {
             self.payButton.isEnabled = true
         } else {
             self.payButton.isEnabled = false

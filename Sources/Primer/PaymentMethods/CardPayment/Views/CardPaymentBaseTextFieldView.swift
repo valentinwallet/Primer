@@ -14,6 +14,8 @@ protocol CardPaymentTextFieldViewProtocol {
 
     func validate() -> Bool
     func textFieldText() -> String
+    func expirationMonth() -> String
+    func expirationYear() -> String
 }
 
 extension CardPaymentTextFieldViewProtocol {
@@ -22,7 +24,18 @@ extension CardPaymentTextFieldViewProtocol {
     }
 
     func textFieldText() -> String {
-        return self.textField.text ?? ""
+        let textFieldText = self.textField.text ?? ""
+        return self.viewModel.format(textFieldText: textFieldText)
+    }
+
+    func expirationMonth() -> String {
+        let textFieldText = self.textField.text ?? ""
+        return viewModel.expiryMonth(textFieldText: textFieldText)
+    }
+
+    func expirationYear() -> String {
+        let textFieldText = self.textField.text ?? ""
+        return viewModel.expiryYear(textFieldText: textFieldText)
     }
 }
 

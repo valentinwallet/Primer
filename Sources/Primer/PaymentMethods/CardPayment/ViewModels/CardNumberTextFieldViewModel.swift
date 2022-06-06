@@ -16,4 +16,8 @@ final class CardNumberTextFieldViewModel: CardPaymentTextFieldViewModel {
             .removeWhitespaces
             .onlyContainsNumbers
     }
+
+    func format(textFieldText text: String) -> String {
+        return text.removeWhitespaces
+    }
 }
