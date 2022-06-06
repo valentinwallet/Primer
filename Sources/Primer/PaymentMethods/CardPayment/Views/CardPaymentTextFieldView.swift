@@ -8,7 +8,7 @@
 import UIKit
 
 protocol CardPaymentTextFieldViewDelegate: AnyObject {
-    func cardPaymentTextFieldViewDidEndEditing(_ view: CardPaymentTextFieldView)
+    func cardPaymentTextFieldViewDidChange(_ view: CardPaymentTextFieldView)
 }
 
 final class CardPaymentTextFieldView: CardPaymentBaseTextFieldView {
@@ -24,9 +24,10 @@ final class CardPaymentTextFieldView: CardPaymentBaseTextFieldView {
     private(set) lazy var textField: UITextField = {
         let textField = PrimerTextField()
         textField.backgroundColor = .systemGray6
-        textField.delegate = self
         textField.keyboardType = self.viewModel.keyboardType
         textField.layer.cornerRadius = .smallCornerRadius
+        textField.addTarget(self, action: #selector(self.textFieldDidChange(_:)), for: .editingChanged)
+        textField.delegate = self
         textField.translatesAutoresizingMaskIntoConstraints = false
         return textField
     }()
@@ -73,6 +74,14 @@ final class CardPaymentTextFieldView: CardPaymentBaseTextFieldView {
     }
 }
 
+// MARK: - UITextFields actions
+extension CardPaymentTextFieldView {
+    @objc
+    private func textFieldDidChange(_ textField: UITextField) {
+        self.delegate?.cardPaymentTextFieldViewDidChange(self)
+    }
+}
+
 // MARK: - UITextFieldDelegate
 
 extension CardPaymentTextFieldView: UITextFieldDelegate {
@@ -87,12 +96,10 @@ extension CardPaymentTextFieldView: UITextFieldDelegate {
 
     func textFieldDidEndEditing(_ textField: UITextField, reason: UITextField.DidEndEditingReason) {
         self.textField.layer.borderWidth = 0
-        self.delegate?.cardPaymentTextFieldViewDidEndEditing(self)
     }
 
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         self.textField.resignFirstResponder()
-        self.delegate?.cardPaymentTextFieldViewDidEndEditing(self)
         return false
     }
 }

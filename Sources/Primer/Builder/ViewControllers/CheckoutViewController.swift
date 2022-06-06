@@ -20,23 +20,32 @@ final class CheckoutViewController: CheckoutBaseViewController {
         stackView.axis = .vertical
         stackView.spacing = .largeSpace
         stackView.isLayoutMarginsRelativeArrangement = true
-        stackView.layoutMargins = UIEdgeInsets(top: .extraLargeSpace, left: .largeSpace, bottom: .extraLargeSpace, right: .largeSpace)
+        stackView.layoutMargins = UIEdgeInsets(top: .largeSpace, left: .largeSpace, bottom: .largeSpace, right: .largeSpace)
         stackView.translatesAutoresizingMaskIntoConstraints = false
         return stackView
     }()
 
-    private let viewModel: CheckoutViewModel
-
-    var publisher: AnyPublisher<TokenValue, Never> { self.subject.eraseToAnyPublisher() }
+    // MARK: - Combine method
+    var tokenPublisher: AnyPublisher<TokenValue, Never> { self.subject.eraseToAnyPublisher() }
     private let subject = PassthroughSubject<TokenValue, Never>()
 
-    var completion: ((Result<String, PrimerAPIError>) -> Void)?
+    // MARK: - Completion method
+    var onTokenSuccess: ((String) -> Void)?
+    var onTokenFailure: ((PrimerAPIError) -> Void)?
 
+    // MARK: - Delegate method
     weak var delegate: CheckoutViewControllerDelegate?
+
+    private let viewModel: CheckoutViewModel
 
     init(viewModel: CheckoutViewModel) {
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
+    }
+
+    deinit {
+        NotificationCenter.default.removeObserver(UIResponder.keyboardWillShowNotification)
+        NotificationCenter.default.removeObserver(UIResponder.keyboardWillHideNotification)
     }
 
     required init?(coder: NSCoder) {
@@ -53,6 +62,8 @@ final class CheckoutViewController: CheckoutBaseViewController {
 
         self.configureScrollView()
         self.configurePaymentMethodStackView()
+        self.listenKeyboardChanges()
+        self.listenTapOnScreen()
     }
 
     private func configureScrollView() {
@@ -75,12 +86,22 @@ final class CheckoutViewController: CheckoutBaseViewController {
         }
 
         NSLayoutConstraint.activate([
-            self.paymentMethodStackView.topAnchor.constraint(equalTo: self.scrollView.topAnchor, constant: .largeSpace),
+            self.paymentMethodStackView.topAnchor.constraint(equalTo: self.scrollView.topAnchor),
             self.paymentMethodStackView.leadingAnchor.constraint(equalTo: self.scrollView.leadingAnchor),
             self.paymentMethodStackView.trailingAnchor.constraint(equalTo: self.scrollView.trailingAnchor),
             self.paymentMethodStackView.widthAnchor.constraint(equalTo: self.scrollView.widthAnchor),
             self.paymentMethodStackView.bottomAnchor.constraint(equalTo: self.scrollView.bottomAnchor)
         ])
+    }
+
+    private func listenKeyboardChanges() {
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide), name: UIResponder.keyboardWillHideNotification, object: nil)
+    }
+
+    private func listenTapOnScreen() {
+        let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(self.dismissKeyboard))
+        self.view.addGestureRecognizer(tapGestureRecognizer)
     }
 }
 
@@ -90,12 +111,37 @@ extension CheckoutViewController: PaymentViewDelegate {
     func paymentView(_ paymentView: PaymentView, didAuthorizePaymentForToken token: String) {
         self.delegate?.checkoutViewController(self, didAuthorizePaymentForToken: token)
         self.subject.send(.success(token: token))
-        self.completion?(.success(token))
+        self.onTokenSuccess?(token)
     }
 
     func paymentView(_ paymentView: PaymentView, didFailPaymentWithError error: PrimerAPIError) {
         self.delegate?.checkoutViewController(self, didFailPaymentWithError: error)
         self.subject.send(.failure(error: error))
-        self.completion?(.failure(error))
+        self.onTokenFailure?(error)
+    }
+}
+
+// MARK: - Keyboard actions
+
+extension CheckoutViewController {
+    @objc
+    private func keyboardWillShow(notification: NSNotification) {
+        guard let userInfo = notification.userInfo,
+        let keyboardFrame = (userInfo[UIResponder.keyboardFrameBeginUserInfoKey] as? NSValue)?.cgRectValue else { return }
+
+        var contentInset: UIEdgeInsets = self.scrollView.contentInset
+        contentInset.bottom = keyboardFrame.size.height + .extraLargeSpace
+
+        self.scrollView.contentInset = contentInset
+    }
+
+    @objc
+    private func keyboardWillHide(notification: NSNotification) {
+        self.scrollView.contentInset = .zero
+    }
+
+    @objc
+    private func dismissKeyboard() {
+        self.view.endEditing(true)
     }
 }

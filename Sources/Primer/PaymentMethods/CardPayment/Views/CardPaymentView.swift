@@ -8,38 +8,14 @@
 import UIKit
 
 final class CardPaymentView: PaymentView {
-    private lazy var cardNumberView: CardPaymentBaseTextFieldView = {
-        let view = CardPaymentTextFieldView(viewModel: CardNumberTextFieldViewModel())
-        view.delegate = self
-        return view
-    }()
+    private var cardNumberView: CardPaymentBaseTextFieldView = CardPaymentTextFieldView(viewModel: CardNumberTextFieldViewModel())
+    private var expiryDateView: CardPaymentBaseTextFieldView = CardPaymentTextFieldView(viewModel: ExpiryDateTextFieldViewModel())
+    private var cardHoldernameView: CardPaymentBaseTextFieldView = CardPaymentTextFieldView(viewModel: CardHolderNameTextFieldViewModel())
+    private var cvvView: CardPaymentBaseTextFieldView = CardPaymentTextFieldView(viewModel: CCVTextFieldViewModel())
 
-    private lazy var expiryDateView: CardPaymentBaseTextFieldView = {
-        let view = CardPaymentTextFieldView(viewModel: ExpiryDateTextFieldViewModel())
-        view.delegate = self
-        return view
-    }()
-
-    private lazy var cvvView: CardPaymentBaseTextFieldView = {
-        let view = CardPaymentTextFieldView(viewModel: CCVTextFieldViewModel())
-        view.delegate = self
-        return view
-    }()
-
-    private lazy var cardHoldernameView: CardPaymentBaseTextFieldView = {
-        let view = CardPaymentTextFieldView(viewModel: CardHolderNameTextFieldViewModel())
-        view.delegate = self
-        return view
-    }()
-
-    private lazy var payButton: UIButton = {
-        let configuration = self.viewModel.configuration
-        let button = PrimerButton(buttonTitle: configuration.payButtonTitle)
-        button.setImage(configuration.payButtonImage, for: .normal)
-        button.setTitleColor(configuration.payButtonTitleColor, for: .normal)
-        button.layer.cornerRadius = configuration.payButtonCornerRadius
-        button.backgroundColor = configuration.payButtonBackgroundColor
-        button.tintColor = configuration.payButtonTitleColor
+    private lazy var payButton: PrimerButton = {
+        let button = PrimerButton()
+        button.configure(with: self.viewModel.configuration)
         button.isEnabled = false
         button.addTarget(self, action: #selector(didTapOnPayButton(sender:)), for: .touchDown)
         return button
@@ -85,6 +61,11 @@ final class CardPaymentView: PaymentView {
     }
 
     private func configureLayout() {
+        self.configureVerticalStackView()
+        self.configureCardPaymentTextFieldViews()
+    }
+
+    private func configureVerticalStackView() {
         self.addSubview(self.verticalStackView)
 
         NSLayoutConstraint.activate([
@@ -94,10 +75,16 @@ final class CardPaymentView: PaymentView {
             self.verticalStackView.bottomAnchor.constraint(equalTo: self.bottomAnchor)
         ])
     }
+
+    private func configureCardPaymentTextFieldViews() {
+        self.cvvView.delegate = self
+        self.cardNumberView.delegate = self
+        self.expiryDateView.delegate = self
+        self.cardHoldernameView.delegate = self
+    }
 }
 
 // MARK: - Actions
-
 extension CardPaymentView {
     @objc
     private func didTapOnPayButton(sender: UIButton) {
@@ -106,24 +93,33 @@ extension CardPaymentView {
                                       expirationMonth: self.expiryDateView.expirationMonth(),
                                       expirationYear: self.expiryDateView.expirationYear(),
                                       cardholderName: self.cardHoldernameView.textFieldText())
+        self.payButton.showLoader()
         self.viewModel.initiatePayment(for: cardDetails)
+    }
+
+    private func hidePayButtonLoader() {
+        DispatchQueue.main.async {
+            self.payButton.hideLoader()
+        }
     }
 }
 
 // MARK: - CardPaymentViewModelDelegate
 extension CardPaymentView: CardPaymentViewModelDelegate {
     func cardPaymentViewModel(_ viewModel: CardPaymentViewModel, didFinishPaymentWithToken token: String) {
+        self.hidePayButtonLoader()
         self.delegate?.paymentView(self, didAuthorizePaymentForToken: token)
     }
 
     func cardPaymentViewModel(_ viewModel: CardPaymentViewModel, didFailPaymentWithError error: PrimerAPIError) {
+        self.hidePayButtonLoader()
         self.delegate?.paymentView(self, didFailPaymentWithError: error)
     }
 }
 
 // MARK: - CardPaymentTextFieldViewDelegate
 extension CardPaymentView: CardPaymentTextFieldViewDelegate {
-    func cardPaymentTextFieldViewDidEndEditing(_ view: CardPaymentTextFieldView) {
+    func cardPaymentTextFieldViewDidChange(_ view: CardPaymentTextFieldView) {
         if self.cardNumberView.validate(),
            self.expiryDateView.validate(),
            self.cvvView.validate(),
