@@ -6,8 +6,9 @@
 //
 
 import UIKit
+import Combine
 
-final class CheckoutViewController: UIViewController {
+final class CheckoutViewController: CheckoutBaseViewController {
     private let scrollView: UIScrollView = {
         let scrollView = UIScrollView()
         scrollView.translatesAutoresizingMaskIntoConstraints = false
@@ -25,6 +26,13 @@ final class CheckoutViewController: UIViewController {
     }()
 
     private let viewModel: CheckoutViewModel
+
+    var publisher: AnyPublisher<TokenValue, Never> { self.subject.eraseToAnyPublisher() }
+    private let subject = PassthroughSubject<TokenValue, Never>()
+
+    var completion: ((Result<String, PrimerAPIError>) -> Void)?
+
+    weak var delegate: CheckoutViewControllerDelegate?
 
     init(viewModel: CheckoutViewModel) {
         self.viewModel = viewModel
@@ -76,12 +84,18 @@ final class CheckoutViewController: UIViewController {
     }
 }
 
+// MARK: - CheckoutViewControllerProtocol
+
 extension CheckoutViewController: PaymentViewDelegate {
-    func paymentView(_ paymentView: PaymentView, didFailPaymentWithError error: PrimerAPIError) {
-        print("error: \(error)")
+    func paymentView(_ paymentView: PaymentView, didAuthorizePaymentForToken token: String) {
+        self.delegate?.checkoutViewController(self, didAuthorizePaymentForToken: token)
+        self.subject.send(.success(token: token))
+        self.completion?(.success(token))
     }
 
-    func paymentView(_ paymentView: PaymentView, didAuthorizePaymentForToken token: String) {
-        print("token: \(token)")
+    func paymentView(_ paymentView: PaymentView, didFailPaymentWithError error: PrimerAPIError) {
+        self.delegate?.checkoutViewController(self, didFailPaymentWithError: error)
+        self.subject.send(.failure(error: error))
+        self.completion?(.failure(error))
     }
 }

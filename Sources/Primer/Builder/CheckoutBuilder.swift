@@ -16,7 +16,7 @@ public final class CheckoutBuilder {
         self.viewControllerFactory = viewControllerFactory
     }
 
-    public func build() -> UIViewController {
+    public func build() -> CheckoutBaseViewController {
         return self.viewControllerFactory.createCheckoutViewController(configuration: self.configuration, paymentMethods: self.paymentMethods)
     }
 }

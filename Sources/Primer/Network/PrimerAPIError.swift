@@ -5,7 +5,7 @@
 //  Created by Valentin Wallet on 6/5/22.
 //
 
-enum PrimerAPIError: Error {
+public enum PrimerAPIError: Error {
     case decode
     case invalidURL
     case noResponse
