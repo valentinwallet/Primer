@@ -62,6 +62,7 @@ final class CheckoutViewController: UIViewController {
         self.scrollView.addSubview(self.paymentMethodStackView)
 
         for paymentMethodView in self.viewModel.getPaymentMethodViews() {
+            paymentMethodView.delegate = self
             self.paymentMethodStackView.addArrangedSubview(paymentMethodView)
         }
 
@@ -72,5 +73,15 @@ final class CheckoutViewController: UIViewController {
             self.paymentMethodStackView.widthAnchor.constraint(equalTo: self.scrollView.widthAnchor),
             self.paymentMethodStackView.bottomAnchor.constraint(equalTo: self.scrollView.bottomAnchor)
         ])
+    }
+}
+
+extension CheckoutViewController: PaymentViewDelegate {
+    func paymentView(_ paymentView: PaymentView, didFailPaymentWithError error: PrimerAPIError) {
+        print("error: \(error)")
+    }
+
+    func paymentView(_ paymentView: PaymentView, didAuthorizePaymentForToken token: String) {
+        print("token: \(token)")
     }
 }

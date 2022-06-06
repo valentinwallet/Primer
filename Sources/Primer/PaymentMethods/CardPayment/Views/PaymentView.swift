@@ -9,6 +9,7 @@ import UIKit
 
 protocol PaymentViewDelegate: AnyObject {
     func paymentView(_ paymentView: PaymentView, didAuthorizePaymentForToken token: String)
+    func paymentView(_ paymentView: PaymentView, didFailPaymentWithError error: PrimerAPIError)
 }
 
 protocol PaymentViewProtocol: AnyObject {

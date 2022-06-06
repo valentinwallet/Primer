@@ -16,8 +16,8 @@ final class CheckoutViewModel {
         self.paymentMethods = paymentMethods
     }
 
-    func getPaymentMethodViews() -> [UIView] {
-        var views: [UIView] = []
+    func getPaymentMethodViews() -> [PaymentView] {
+        var views: [PaymentView] = []
 
         for paymentMethod in paymentMethods {
             views.append(self.getPaymentMethodView(for: paymentMethod))
@@ -26,7 +26,7 @@ final class CheckoutViewModel {
         return views
     }
 
-    private func getPaymentMethodView(for paymentMethod: PaymentMethod) -> UIView {
+    private func getPaymentMethodView(for paymentMethod: PaymentMethod) -> PaymentView {
         switch paymentMethod {
         case .card:
             let viewModel = CardPaymentViewModel(configuration: self.configuration)

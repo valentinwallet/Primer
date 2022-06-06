@@ -76,6 +76,7 @@ final class CardPaymentView: PaymentView {
     init(viewModel: CardPaymentViewModel) {
         self.viewModel = viewModel
         super.init(frame: .zero)
+        self.viewModel.delegate = self
         self.configureLayout()
     }
 
@@ -109,7 +110,18 @@ extension CardPaymentView {
     }
 }
 
+// MARK: - CardPaymentViewModelDelegate
+extension CardPaymentView: CardPaymentViewModelDelegate {
+    func cardPaymentViewModel(_ viewModel: CardPaymentViewModel, didFinishPaymentWithToken token: String) {
+        self.delegate?.paymentView(self, didAuthorizePaymentForToken: token)
+    }
 
+    func cardPaymentViewModel(_ viewModel: CardPaymentViewModel, didFailPaymentWithError error: PrimerAPIError) {
+        self.delegate?.paymentView(self, didFailPaymentWithError: error)
+    }
+}
+
+// MARK: - CardPaymentTextFieldViewDelegate
 extension CardPaymentView: CardPaymentTextFieldViewDelegate {
     func cardPaymentTextFieldViewDidEndEditing(_ view: CardPaymentTextFieldView) {
         if self.cardNumberView.validate(),
