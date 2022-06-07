@@ -78,6 +78,7 @@ final class CardPaymentTextFieldView: CardPaymentBaseTextFieldView {
 extension CardPaymentTextFieldView {
     @objc
     private func textFieldDidChange(_ textField: UITextField) {
+        self.viewModel.textFieldDidChange(textField: textField)
         self.delegate?.cardPaymentTextFieldViewDidChange(self)
     }
 }

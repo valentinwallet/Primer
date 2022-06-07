@@ -16,6 +16,7 @@ protocol CardPaymentTextFieldViewModel: AnyObject {
     func format(textFieldText text: String) -> String
     func expiryMonth(textFieldText text: String) -> String
     func expiryYear(textFieldText text: String) -> String
+    func textFieldDidChange(textField: UITextField)
 }
 
 extension CardPaymentTextFieldViewModel {
@@ -29,4 +30,5 @@ extension CardPaymentTextFieldViewModel {
 
     func expiryMonth(textFieldText text: String) -> String { return "" }
     func expiryYear(textFieldText text: String) -> String { return "" }
+    func textFieldDidChange(textField: UITextField) {}
 }

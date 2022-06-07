@@ -43,4 +43,24 @@ final class CardNumberTextFieldViewModelTests: XCTestCase {
             XCTAssertEqual(viewModel.validate(for: text), expectedResult, "wrong validate value for text: \(text) should be \(expectedResult)")
         }
     }
+
+    func test_text_field_did_change() {
+        // GIVEN
+        let viewModel = CardNumberTextFieldViewModel()
+        let testData: [(text: String, expectedResult: String)] = [
+            ("1234", "1234"),
+            ("13256", "1325 6"),
+            ("4111411141114111", "4111 4111 4111 4111")
+        ]
+
+        // WHEN
+        testData.forEach { (text: String, expectedResult: String) in
+            let textField = UITextField()
+            textField.text = text
+            viewModel.textFieldDidChange(textField: textField)
+
+            // THEN
+            XCTAssertEqual(textField.text, expectedResult, "wrong textFieldText, should be \(expectedResult) for \(text)")
+        }
+    }
 }
