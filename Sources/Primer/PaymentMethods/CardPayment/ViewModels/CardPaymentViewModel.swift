@@ -6,7 +6,6 @@
 //
 
 import Foundation
-import JWTDecode
 
 protocol CardPaymentViewModelDelegate: AnyObject {
     func cardPaymentViewModel(_ viewModel: CardPaymentViewModel, didFinishPaymentWithToken token: String)
@@ -16,6 +15,7 @@ protocol CardPaymentViewModelDelegate: AnyObject {
 final class CardPaymentViewModel {
     private let clientTokenService: ClientTokenServiceProtocol
     private let paymentInstrumentService: PaymentInstrumentServiceProtocol
+    private let jwtDecoderService: JWTDecoderServiceProtocol
 
     private(set) var configuration: CheckoutBuilderConfiguration
 
@@ -23,10 +23,12 @@ final class CardPaymentViewModel {
 
     init(configuration: CheckoutBuilderConfiguration,
          clientTokenService: ClientTokenServiceProtocol = ClientTokenService(),
-         paymentInstrumentService: PaymentInstrumentServiceProtocol = PaymentInstrumentService()) {
+         paymentInstrumentService: PaymentInstrumentServiceProtocol = PaymentInstrumentService(),
+         jwtDecoderService: JWTDecoderServiceProtocol = JWTDecoderService()) {
         self.configuration = configuration
         self.clientTokenService = clientTokenService
         self.paymentInstrumentService = paymentInstrumentService
+        self.jwtDecoderService = jwtDecoderService
     }
 
     func initiatePayment(for cardDetails: CardDetails) {
@@ -43,7 +45,7 @@ final class CardPaymentViewModel {
     }
 
     private func handleClientToken(_ clientToken: ClientToken, for cardDetails: CardDetails) {
-        guard let accessToken = self.getAccessToken(from: clientToken) else {
+        guard let accessToken = self.jwtDecoderService.getAccessToken(from: clientToken.clientToken) else {
             self.delegate?.cardPaymentViewModel(self, didFailPaymentWithError: .decode)
             return
         }
@@ -60,18 +62,6 @@ final class CardPaymentViewModel {
             self.delegate?.cardPaymentViewModel(self, didFinishPaymentWithToken: paymentInstrumentResponse.token)
         case .failure(let error):
             self.delegate?.cardPaymentViewModel(self, didFailPaymentWithError: error)
-        }
-    }
-
-    private func getAccessToken(from clientToken: ClientToken) -> String? {
-        guard let jwt = try? decode(jwt: clientToken.clientToken) else {
-            return nil
-        }
-
-        if let accessToken = jwt.body["accessToken"] as? String {
-            return accessToken
-        } else {
-            return nil
         }
     }
 }
