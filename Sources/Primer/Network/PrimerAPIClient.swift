@@ -32,7 +32,7 @@ final class PrimerAPIClient: PrimerAPIClientProtocol {
             request.httpBody = try? JSONSerialization.data(withJSONObject: body)
         }
 
-        urlSession.dataTask(with: request) { data, response, error in
+        self.urlSession.dataTask(with: request) { data, response, error in
             guard error == nil, let data = data else {
                 completion(.failure(.unknown))
                 return

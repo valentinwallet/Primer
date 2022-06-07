@@ -9,7 +9,8 @@ import UIKit
 import Combine
 import PassKit
 
-public final class CheckoutCoordinator: NSObject, CheckoutCoordinatorProtocol {
+/// Will coordinate everything in order to create a `CheckoutViewController` and send back authorization token
+public final class CheckoutCoordinator: CheckoutCoordinatorProtocol {
     public var tokenPublisher: AnyPublisher<TokenValue, Never> { self.subject.eraseToAnyPublisher() }
     private let subject = PassthroughSubject<TokenValue, Never>()
     public var delegate: CheckoutCoordinatorDelegate?
@@ -58,26 +59,6 @@ public final class CheckoutCoordinator: NSObject, CheckoutCoordinatorProtocol {
         }
     }
 
-    private func showApplePay() {
-        let request = PKPaymentRequest()
-                request.merchantIdentifier = "merchant.com..."
-                request.supportedNetworks = [.visa, .masterCard,.amex,.discover]
-                request.supportedCountries = ["UA"]
-                request.merchantCapabilities = .capability3DS
-                request.countryCode = "UA"
-                request.currencyCode = "UAH"
-                request.paymentSummaryItems = [PKPaymentSummaryItem(label: "App test", amount: 10.99)]
-
-        if let controller = PKPaymentAuthorizationViewController(paymentRequest: request),
-           let topViewController = UIApplication.getTopViewController() {
-            controller.delegate = self
-            DispatchQueue.main.async {
-                topViewController.present(controller, animated: true, completion: nil)
-            }
-
-        }
-    }
-
     private func getPaymentMethodSectionViews() -> [UIView] {
         return self.paymentMethodSections.map { return $0.start() }
     }
@@ -94,16 +75,5 @@ extension CheckoutCoordinator: PaymentMethodCoordinatorDelegate {
         self.delegate?.checkoutBuilderCoordinator(self, didFailAuthorizePaymentMethodWithError: error)
         self.subject.send(.failure(error: error))
         self.onTokenFailure?(error)
-        self.showApplePay()
-    }
-}
-
-extension CheckoutCoordinator: PKPaymentAuthorizationViewControllerDelegate {
-    public func paymentAuthorizationViewController(_ controller: PKPaymentAuthorizationViewController, didAuthorizePayment payment: PKPayment, handler completion: @escaping (PKPaymentAuthorizationResult) -> Void) {
-        completion(PKPaymentAuthorizationResult(status: .success, errors: nil))
-    }
-
-    public func paymentAuthorizationViewControllerDidFinish(_ controller: PKPaymentAuthorizationViewController) {
-        controller.dismiss(animated: true, completion: nil)
     }
 }
