@@ -23,7 +23,7 @@ final class CardPaymentTextFieldView: CardPaymentBaseTextFieldView {
 
     private(set) lazy var textField: UITextField = {
         let textField = PrimerTextField()
-        textField.backgroundColor = .systemGray6
+        textField.backgroundColor = .systemGray5
         textField.keyboardType = self.viewModel.keyboardType
         textField.layer.cornerRadius = .smallCornerRadius
         textField.addTarget(self, action: #selector(self.textFieldDidChange(_:)), for: .editingChanged)
