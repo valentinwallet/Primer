@@ -46,6 +46,7 @@ final class HomeViewController: UIViewController {
         self.coordinator = PrimerCheckoutBuilder
             .payButtonTitle("Pay with card")
             .payButtonImage(UIImage(systemName: "creditcard"))
+            .addPaymentMethod(.applePay(merchantId: "merchantId"))
             .build()
 
         self.coordinator?
