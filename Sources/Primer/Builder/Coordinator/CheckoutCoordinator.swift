@@ -1,5 +1,5 @@
 //
-//  File.swift
+//  CheckoutCoordinator.swift
 //  
 //
 //  Created by Valentin Wallet on 6/7/22.
