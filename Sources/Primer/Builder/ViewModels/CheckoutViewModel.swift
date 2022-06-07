@@ -8,7 +8,6 @@
 import UIKit
 
 struct CheckoutViewModel {
-    // TODO: test that
     let title: String = "Checkout"
     let paymentMethodSectionViews: [UIView]
 }

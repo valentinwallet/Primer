@@ -7,18 +7,21 @@
 
 import UIKit
 
-/// Builder used to create a `CheckoutBaseViewController`.
+/// Builder used to create a `CheckoutCoordinator`.
 /// - Important: Remember to call the `build()` method after the customization of the `CheckoutBaseViewController` view.
 public final class CheckoutBuilder {
     private var configuration: CheckoutBuilderConfiguration = CheckoutBuilderConfiguration()
     private var paymentMethods: [PaymentMethod] = [.card]
+    private let checkoutBuilderCoordinatorFactory: CheckoutCoordinatorFactoryProtocol
 
-    /// Call this method to create a `CheckoutBaseViewController`.
-    /// - Returns: CheckoutBaseViewController
+    init(checkoutBuilderCoordinatorFactory: CheckoutCoordinatorFactoryProtocol = CheckoutCoordinatorFactory()) {
+        self.checkoutBuilderCoordinatorFactory = checkoutBuilderCoordinatorFactory
+    }
+
+    /// Call this method to create a `CheckoutCoordinator`.
+    /// - Returns: CheckoutCoordinatorProtocol
     public func build() -> CheckoutCoordinatorProtocol {
-        return CheckoutBuilderCoordinator(paymentMethods: self.paymentMethods,
-                                          configuration: self.configuration,
-                                          checkoutViewControllerFactory: CheckoutViewControllerFactory())
+        return self.checkoutBuilderCoordinatorFactory.createCheckoutBuilderCoordinator(paymentMethods: self.paymentMethods, configuration: self.configuration)
     }
 }
 

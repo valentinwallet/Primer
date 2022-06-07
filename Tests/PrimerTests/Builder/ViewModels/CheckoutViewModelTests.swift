@@ -9,15 +9,11 @@ import XCTest
 @testable import Primer
 
 final class CheckoutViewModelTests: XCTestCase {
-    func test_get_payment_method_views() {
+    func test_title() {
         // GIVEN
-        let viewModel = CheckoutViewModel(configuration: CheckoutBuilderConfiguration(), paymentMethods: [.card])
-
-        // WHEN
-        let paymentMethodViews = viewModel.getPaymentMethodViews()
+        let viewModel = CheckoutViewModel(paymentMethodSectionViews: [])
 
         // THEN
-        XCTAssertEqual(paymentMethodViews.count, 1, "Should have one payment method view")
-        XCTAssertTrue(paymentMethodViews[0] is CardPaymentView)
+        XCTAssertEqual(viewModel.title, "Checkout")
     }
 }

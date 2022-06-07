@@ -8,11 +8,11 @@
 import UIKit
 
 protocol CheckoutViewControllerFactoryProtocol {
-    func createCheckoutViewController(paymentMethodSectionViews: [UIView]) -> UIViewController
+    func createCheckoutViewController(paymentMethodSectionViews: [UIView]) -> CheckoutViewController
 }
 
 final class CheckoutViewControllerFactory: CheckoutViewControllerFactoryProtocol {
-    func createCheckoutViewController(paymentMethodSectionViews: [UIView]) -> UIViewController {
+    func createCheckoutViewController(paymentMethodSectionViews: [UIView]) -> CheckoutViewController {
         let viewModel = CheckoutViewModel(paymentMethodSectionViews: paymentMethodSectionViews)
         return CheckoutViewController(viewModel: viewModel)
     }

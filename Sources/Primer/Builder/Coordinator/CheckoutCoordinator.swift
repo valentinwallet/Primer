@@ -8,10 +8,10 @@
 import UIKit
 import Combine
 
-public final class CheckoutBuilderCoordinator: CheckoutCoordinatorProtocol {
+public final class CheckoutCoordinator: CheckoutCoordinatorProtocol {
     public var tokenPublisher: AnyPublisher<TokenValue, Never> { self.subject.eraseToAnyPublisher() }
     private let subject = PassthroughSubject<TokenValue, Never>()
-    public var delegate: CheckoutBuilderCoordinatorDelegate?
+    public var delegate: CheckoutCoordinatorDelegate?
     public var onTokenSuccess: ((String) -> Void)?
     public var onTokenFailure: ((PrimerAPIError) -> Void)?
 
@@ -64,7 +64,7 @@ public final class CheckoutBuilderCoordinator: CheckoutCoordinatorProtocol {
     }
 }
 
-extension CheckoutBuilderCoordinator: PaymentMethodCoordinatorDelegate {
+extension CheckoutCoordinator: PaymentMethodCoordinatorDelegate {
     func paymentMethodCoordinator(_ coordinator: PaymentMethodCoordinator, didAuthorizePaymentMethodForToken token: String) {
         self.delegate?.checkoutBuilderCoordinator(self, didAuthorizeMethodPaymentForToken: token)
         self.subject.send(.success(token: token))

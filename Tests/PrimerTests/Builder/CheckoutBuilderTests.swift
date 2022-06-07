@@ -9,49 +9,42 @@ import XCTest
 @testable import Primer
 
 final class CheckoutBuilderTests: XCTestCase {
-    func test_build_should_create_checkout_view_controller() {
+    func test_build_should_create_checkout_coordinator() {
         // GIVEN
-        let viewControllerFactory = ViewControllerFactoryMock()
-        let builder = CheckoutBuilder(viewControllerFactory: viewControllerFactory)
-        let createCheckoutViewControllerExpectation = self.expectation(description: "should call createCheckoutViewController()")
+        let factoryMock = CheckoutCoordinatorFactoryMock()
+        let builder = CheckoutBuilder(checkoutBuilderCoordinatorFactory: factoryMock)
+        let createCheckoutBuilderCoordinatorExpectation = self.expectation(description: "should call createCheckoutBuilderCoordinator() method")
 
-        viewControllerFactory.createCheckoutViewControllerExpectation = createCheckoutViewControllerExpectation
+        factoryMock.createCheckoutBuilderCoordinatorExpectation = createCheckoutBuilderCoordinatorExpectation
 
         // WHEN
-        _ = builder.build()
+        let checkoutCoordinator = builder.build()
 
         // THEN
-        self.wait(for: [createCheckoutViewControllerExpectation], timeout: 0.1)
-    }
-
-    func test_build_view_controller_type() {
-        // GIVEN
-        let builder = CheckoutBuilder()
-
-        // WHEN...THEN
-        XCTAssertTrue(builder.build() is CheckoutViewController)
+        self.wait(for: [createCheckoutBuilderCoordinatorExpectation], timeout: 0.1)
+        XCTAssertTrue(checkoutCoordinator is CheckoutCoordinator)
     }
 
     func test_build_default() {
         // GIVEN
-        let viewControllerFactory = ViewControllerFactoryMock()
-        let builder = CheckoutBuilder(viewControllerFactory: viewControllerFactory)
+        let factoryMock = CheckoutCoordinatorFactoryMock()
+        let builder = CheckoutBuilder(checkoutBuilderCoordinatorFactory: factoryMock)
 
         // WHEN
         _ = builder.build()
 
         // THEN
-        XCTAssertEqual(viewControllerFactory.configuration?.payButtonTitleColor, .systemBackground, "wrong payButtonTitleColor value")
-        XCTAssertEqual(viewControllerFactory.configuration?.payButtonCornerRadius, .smallCornerRadius, "wrong payButtonCornerRadius value")
-        XCTAssertEqual(viewControllerFactory.configuration?.payButtonBackgroundColor.cgColor, UIColor.systemBackgroundInverted.cgColor, "wrong payButtonBackgroundColor value")
-        XCTAssertEqual(viewControllerFactory.configuration?.payButtonTitle, "Pay", "wrong payButtonTitle value")
-        XCTAssertEqual(viewControllerFactory.configuration?.payButtonImage, nil, "wrong payButtonImage value")
+        XCTAssertEqual(factoryMock.configuration?.payButtonTitleColor, .systemBackground, "wrong payButtonTitleColor value")
+        XCTAssertEqual(factoryMock.configuration?.payButtonCornerRadius, .smallCornerRadius, "wrong payButtonCornerRadius value")
+        XCTAssertEqual(factoryMock.configuration?.payButtonBackgroundColor.cgColor, UIColor.systemBackgroundInverted.cgColor, "wrong payButtonBackgroundColor value")
+        XCTAssertEqual(factoryMock.configuration?.payButtonTitle, "Pay", "wrong payButtonTitle value")
+        XCTAssertEqual(factoryMock.configuration?.payButtonImage, nil, "wrong payButtonImage value")
     }
 
     func test_build_pay_button_corner_radius() {
         // GIVEN
-        let viewControllerFactory = ViewControllerFactoryMock()
-        let builder = CheckoutBuilder(viewControllerFactory: viewControllerFactory)
+        let factoryMock = CheckoutCoordinatorFactoryMock()
+        let builder = CheckoutBuilder(checkoutBuilderCoordinatorFactory: factoryMock)
         let cornerRadius: CGFloat = 28
 
         // WHEN
@@ -60,13 +53,13 @@ final class CheckoutBuilderTests: XCTestCase {
             .build()
 
         // THEN
-        XCTAssertEqual(viewControllerFactory.configuration?.payButtonCornerRadius, cornerRadius)
+        XCTAssertEqual(factoryMock.configuration?.payButtonCornerRadius, cornerRadius)
     }
 
     func test_build_pay_button_color() {
         // GIVEN
-        let viewControllerFactory = ViewControllerFactoryMock()
-        let builder = CheckoutBuilder(viewControllerFactory: viewControllerFactory)
+        let factoryMock = CheckoutCoordinatorFactoryMock()
+        let builder = CheckoutBuilder(checkoutBuilderCoordinatorFactory: factoryMock)
         let color: UIColor = .red
 
         // WHEN
@@ -75,13 +68,13 @@ final class CheckoutBuilderTests: XCTestCase {
             .build()
 
         // THEN
-        XCTAssertEqual(viewControllerFactory.configuration?.payButtonBackgroundColor, color)
+        XCTAssertEqual(factoryMock.configuration?.payButtonBackgroundColor, color)
     }
 
     func test_build_pay_button_image() {
         // GIVEN
-        let viewControllerFactory = ViewControllerFactoryMock()
-        let builder = CheckoutBuilder(viewControllerFactory: viewControllerFactory)
+        let factoryMock = CheckoutCoordinatorFactoryMock()
+        let builder = CheckoutBuilder(checkoutBuilderCoordinatorFactory: factoryMock)
         let image: UIImage? = UIImage(systemName: "creditcard")
 
         // WHEN
@@ -90,13 +83,13 @@ final class CheckoutBuilderTests: XCTestCase {
             .build()
 
         // THEN
-        XCTAssertEqual(viewControllerFactory.configuration?.payButtonImage, image)
+        XCTAssertEqual(factoryMock.configuration?.payButtonImage, image)
     }
 
     func test_build_pay_button_title() {
         // GIVEN
-        let viewControllerFactory = ViewControllerFactoryMock()
-        let builder = CheckoutBuilder(viewControllerFactory: viewControllerFactory)
+        let factoryMock = CheckoutCoordinatorFactoryMock()
+        let builder = CheckoutBuilder(checkoutBuilderCoordinatorFactory: factoryMock)
         let title = "Pay with card"
 
         // WHEN
@@ -105,13 +98,13 @@ final class CheckoutBuilderTests: XCTestCase {
             .build()
 
         // THEN
-        XCTAssertEqual(viewControllerFactory.configuration?.payButtonTitle, title)
+        XCTAssertEqual(factoryMock.configuration?.payButtonTitle, title)
     }
 
     func test_build_pay_button_title_color() {
         // GIVEN
-        let viewControllerFactory = ViewControllerFactoryMock()
-        let builder = CheckoutBuilder(viewControllerFactory: viewControllerFactory)
+        let factoryMock = CheckoutCoordinatorFactoryMock()
+        let builder = CheckoutBuilder(checkoutBuilderCoordinatorFactory: factoryMock)
         let color: UIColor = .red
 
         // WHEN
@@ -120,17 +113,19 @@ final class CheckoutBuilderTests: XCTestCase {
             .build()
 
         // THEN
-        XCTAssertEqual(viewControllerFactory.configuration?.payButtonTitleColor, color)
+        XCTAssertEqual(factoryMock.configuration?.payButtonTitleColor, color)
     }
 }
 
-private final class ViewControllerFactoryMock: CheckoutViewControllerFactoryProtocol {
-    var createCheckoutViewControllerExpectation: XCTestExpectation?
-    var views: [UIView]
+private final class CheckoutCoordinatorFactoryMock: CheckoutCoordinatorFactoryProtocol {
+    var createCheckoutBuilderCoordinatorExpectation: XCTestExpectation?
+    var paymentMethods: [PaymentMethod]?
+    var configuration: CheckoutBuilderConfiguration?
 
-    func createCheckoutViewController(paymentMethodSectionViews: [UIView]) -> UIViewController {
-        self.views
-        self.createCheckoutViewControllerExpectation?.fulfill()
-        return UIViewController()
+    func createCheckoutBuilderCoordinator(paymentMethods: [PaymentMethod], configuration: CheckoutBuilderConfiguration) -> CheckoutCoordinatorProtocol {
+        self.paymentMethods = paymentMethods
+        self.configuration = configuration
+        self.createCheckoutBuilderCoordinatorExpectation?.fulfill()
+        return CheckoutCoordinator(paymentMethods: paymentMethods, configuration: configuration, checkoutViewControllerFactory: CheckoutViewControllerFactory())
     }
 }
