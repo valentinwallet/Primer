@@ -7,7 +7,12 @@
 
 import UIKit
 
-final class CardPaymentView: PaymentView {
+protocol CardPaymentViewDelegate: AnyObject {
+    func cardPaymentView(_ cardPaymentView: CardPaymentView, didAuthorizePaymentMethodForToken token: String)
+    func cardPaymentView(_ cardPaymentView: CardPaymentView, didFailAuthorizePaymentMethodWithError error: PrimerAPIError)
+}
+
+final class CardPaymentView: UIView {
     private var cardNumberView: CardPaymentBaseTextFieldView = CardPaymentTextFieldView(viewModel: CardNumberTextFieldViewModel())
     private var expiryDateView: CardPaymentBaseTextFieldView = CardPaymentTextFieldView(viewModel: ExpiryDateTextFieldViewModel())
     private var cardHoldernameView: CardPaymentBaseTextFieldView = CardPaymentTextFieldView(viewModel: CardHolderNameTextFieldViewModel())
@@ -45,7 +50,7 @@ final class CardPaymentView: PaymentView {
         return stackView
     }()
 
-    weak var delegate: PaymentViewDelegate?
+    weak var delegate: CardPaymentViewDelegate?
 
     private let viewModel: CardPaymentViewModel
 
@@ -108,12 +113,12 @@ extension CardPaymentView {
 extension CardPaymentView: CardPaymentViewModelDelegate {
     func cardPaymentViewModel(_ viewModel: CardPaymentViewModel, didFinishPaymentWithToken token: String) {
         self.hidePayButtonLoader()
-        self.delegate?.paymentView(self, didAuthorizePaymentForToken: token)
+        self.delegate?.cardPaymentView(self, didAuthorizePaymentMethodForToken: token)
     }
 
     func cardPaymentViewModel(_ viewModel: CardPaymentViewModel, didFailPaymentWithError error: PrimerAPIError) {
         self.hidePayButtonLoader()
-        self.delegate?.paymentView(self, didFailPaymentWithError: error)
+        self.delegate?.cardPaymentView(self, didFailAuthorizePaymentMethodWithError: error)
     }
 }
 

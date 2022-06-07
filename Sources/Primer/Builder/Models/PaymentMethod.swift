@@ -9,4 +9,7 @@
 /// `PaymentView` for the `CheckoutBaseViewController`
 public enum PaymentMethod {
     case card
+    case applePay(merchantId: String)
 }
+
+extension PaymentMethod: Equatable {}

@@ -30,12 +30,12 @@ extension CardPaymentTextFieldViewProtocol {
 
     func expirationMonth() -> String {
         let textFieldText = self.textField.text ?? ""
-        return viewModel.expiryMonth(textFieldText: textFieldText)
+        return self.viewModel.expiryMonth(textFieldText: textFieldText)
     }
 
     func expirationYear() -> String {
         let textFieldText = self.textField.text ?? ""
-        return viewModel.expiryYear(textFieldText: textFieldText)
+        return self.viewModel.expiryYear(textFieldText: textFieldText)
     }
 }
 

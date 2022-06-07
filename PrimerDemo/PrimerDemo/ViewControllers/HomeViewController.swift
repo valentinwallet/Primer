@@ -6,8 +6,13 @@
 //
 
 import UIKit
+import Primer
+import Combine
 
 final class HomeViewController: UIViewController {
+    private var subscriptions: Set<AnyCancellable> = .init()
+    private var coordinator: CheckoutCoordinatorProtocol?
+
     private lazy var goToCheckoutButton: UIButton = {
         let button = UIButton()
         button.backgroundColor = .systemBlue
@@ -36,12 +41,27 @@ final class HomeViewController: UIViewController {
             self.goToCheckoutButton.widthAnchor.constraint(equalToConstant: 200)
         ])
     }
+
+    private func showCheckout() {
+        self.coordinator = PrimerCheckoutBuilder
+            .payButtonTitle("Pay with card")
+            .payButtonImage(UIImage(systemName: "creditcard"))
+            .build()
+
+        self.coordinator?
+            .tokenPublisher
+            .sink { value in
+                print(value)
+            }
+            .store(in: &self.subscriptions)
+
+        self.coordinator?.start(from: self)
+    }
 }
 
 extension HomeViewController {
     @objc
     private func didTapGoToCheckoutButton(sender: UIButton) {
-        let checkoutViewController = CheckoutViewController()
-        self.navigationController?.pushViewController(checkoutViewController, animated: true)
+        self.showCheckout()
     }
 }

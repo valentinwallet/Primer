@@ -16,7 +16,6 @@
 		7EBA59DD284BA55800CEA6C0 /* PrimerDemoUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7EBA59DC284BA55800CEA6C0 /* PrimerDemoUITestsLaunchTests.swift */; };
 		7EBA59ED284BA5EF00CEA6C0 /* Primer in Frameworks */ = {isa = PBXBuildFile; productRef = 7EBA59EC284BA5EF00CEA6C0 /* Primer */; };
 		7EBE961B284E8FA400170469 /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7EBE961A284E8FA400170469 /* HomeViewController.swift */; };
-		7EBE961D284E915500170469 /* CheckoutViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7EBE961C284E915500170469 /* CheckoutViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -50,7 +49,6 @@
 		7EBA59DC284BA55800CEA6C0 /* PrimerDemoUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrimerDemoUITestsLaunchTests.swift; sourceTree = "<group>"; };
 		7EBA59EA284BA59F00CEA6C0 /* Primer */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = Primer; path = ..; sourceTree = "<group>"; };
 		7EBE961A284E8FA400170469 /* HomeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewController.swift; sourceTree = "<group>"; };
-		7EBE961C284E915500170469 /* CheckoutViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckoutViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -150,7 +148,6 @@
 			isa = PBXGroup;
 			children = (
 				7EBE961A284E8FA400170469 /* HomeViewController.swift */,
-				7EBE961C284E915500170469 /* CheckoutViewController.swift */,
 			);
 			path = ViewControllers;
 			sourceTree = "<group>";
@@ -288,7 +285,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				7EBE961D284E915500170469 /* CheckoutViewController.swift in Sources */,
 				7EBA59BA284BA55500CEA6C0 /* AppDelegate.swift in Sources */,
 				7EBA59BC284BA55500CEA6C0 /* SceneDelegate.swift in Sources */,
 				7EBE961B284E8FA400170469 /* HomeViewController.swift in Sources */,

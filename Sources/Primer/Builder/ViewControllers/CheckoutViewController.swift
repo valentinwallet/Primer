@@ -8,7 +8,7 @@
 import UIKit
 import Combine
 
-final class CheckoutViewController: CheckoutBaseViewController {
+final class CheckoutViewController: UIViewController {
     private let scrollView: UIScrollView = {
         let scrollView = UIScrollView()
         scrollView.translatesAutoresizingMaskIntoConstraints = false
@@ -24,17 +24,6 @@ final class CheckoutViewController: CheckoutBaseViewController {
         stackView.translatesAutoresizingMaskIntoConstraints = false
         return stackView
     }()
-
-    // MARK: - Combine method
-    var tokenPublisher: AnyPublisher<TokenValue, Never> { self.subject.eraseToAnyPublisher() }
-    private let subject = PassthroughSubject<TokenValue, Never>()
-
-    // MARK: - Completion method
-    var onTokenSuccess: ((String) -> Void)?
-    var onTokenFailure: ((PrimerAPIError) -> Void)?
-
-    // MARK: - Delegate method
-    weak var delegate: CheckoutViewControllerDelegate?
 
     private let viewModel: CheckoutViewModel
 
@@ -58,6 +47,7 @@ final class CheckoutViewController: CheckoutBaseViewController {
     }
 
     private func configureLayout() {
+        self.title = self.viewModel.title
         self.view.backgroundColor = .systemBackground
 
         self.configureScrollView()
@@ -80,9 +70,8 @@ final class CheckoutViewController: CheckoutBaseViewController {
     private func configurePaymentMethodStackView() {
         self.scrollView.addSubview(self.paymentMethodStackView)
 
-        for paymentMethodView in self.viewModel.getPaymentMethodViews() {
-            paymentMethodView.delegate = self
-            self.paymentMethodStackView.addArrangedSubview(paymentMethodView)
+        for paymentMethodSectionView in self.viewModel.paymentMethodSectionViews {
+            self.paymentMethodStackView.addArrangedSubview(paymentMethodSectionView)
         }
 
         NSLayoutConstraint.activate([
@@ -102,22 +91,6 @@ final class CheckoutViewController: CheckoutBaseViewController {
     private func listenTapOnScreen() {
         let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(self.dismissKeyboard))
         self.view.addGestureRecognizer(tapGestureRecognizer)
-    }
-}
-
-// MARK: - CheckoutViewControllerProtocol
-
-extension CheckoutViewController: PaymentViewDelegate {
-    func paymentView(_ paymentView: PaymentView, didAuthorizePaymentForToken token: String) {
-        self.delegate?.checkoutViewController(self, didAuthorizePaymentForToken: token)
-        self.subject.send(.success(token: token))
-        self.onTokenSuccess?(token)
-    }
-
-    func paymentView(_ paymentView: PaymentView, didFailPaymentWithError error: PrimerAPIError) {
-        self.delegate?.checkoutViewController(self, didFailPaymentWithError: error)
-        self.subject.send(.failure(error: error))
-        self.onTokenFailure?(error)
     }
 }
 

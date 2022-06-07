@@ -12,16 +12,13 @@ import UIKit
 public final class CheckoutBuilder {
     private var configuration: CheckoutBuilderConfiguration = CheckoutBuilderConfiguration()
     private var paymentMethods: [PaymentMethod] = [.card]
-    private let viewControllerFactory: ViewControllerFactoryProtocol
-
-    init(viewControllerFactory: ViewControllerFactoryProtocol = ViewControllerFactory()) {
-        self.viewControllerFactory = viewControllerFactory
-    }
 
     /// Call this method to create a `CheckoutBaseViewController`.
     /// - Returns: CheckoutBaseViewController
-    public func build() -> CheckoutBaseViewController {
-        return self.viewControllerFactory.createCheckoutViewController(configuration: self.configuration, paymentMethods: self.paymentMethods)
+    public func build() -> CheckoutCoordinatorProtocol {
+        return CheckoutBuilderCoordinator(paymentMethods: self.paymentMethods,
+                                          configuration: self.configuration,
+                                          checkoutViewControllerFactory: CheckoutViewControllerFactory())
     }
 }
 

@@ -83,7 +83,6 @@ extension CardPaymentTextFieldView {
 }
 
 // MARK: - UITextFieldDelegate
-
 extension CardPaymentTextFieldView: UITextFieldDelegate {
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
         return self.viewModel.shouldChangeCharacters(textField: textField, range: range, replacementString: string)

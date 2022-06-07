@@ -124,14 +124,12 @@ final class CheckoutBuilderTests: XCTestCase {
     }
 }
 
-private final class ViewControllerFactoryMock: ViewControllerFactoryProtocol {
+private final class ViewControllerFactoryMock: CheckoutViewControllerFactoryProtocol {
     var createCheckoutViewControllerExpectation: XCTestExpectation?
-    var configuration: CheckoutBuilderConfiguration?
-    var paymentMethods: [PaymentMethod]?
+    var views: [UIView]
 
-    func createCheckoutViewController(configuration: CheckoutBuilderConfiguration, paymentMethods: [PaymentMethod]) -> UIViewController {
-        self.configuration = configuration
-        self.paymentMethods = paymentMethods
+    func createCheckoutViewController(paymentMethodSectionViews: [UIView]) -> UIViewController {
+        self.views
         self.createCheckoutViewControllerExpectation?.fulfill()
         return UIViewController()
     }
