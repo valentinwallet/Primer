@@ -44,10 +44,6 @@ final class HomeViewController: UIViewController {
 
     private func showCheckout() {
         self.coordinator = PrimerCheckoutBuilder
-            .payButtonColor(.systemTeal)
-            .payButtonTitleColor(.systemRed)
-            .payButtonTitle("Pay with card")
-            .payButtonCornerRadius(16)
             .payButtonImage(UIImage(systemName: "creditcard"))
             .addPaymentMethod(.applePay(merchantId: "merchantId"))
             .build()
@@ -55,7 +51,12 @@ final class HomeViewController: UIViewController {
         self.coordinator?
             .tokenPublisher
             .sink { value in
-                print(value)
+                switch value {
+                case .failure(let error):
+                    print(error)
+                case .success(let token):
+                    print(token)
+                }
             }
             .store(in: &self.subscriptions)
 

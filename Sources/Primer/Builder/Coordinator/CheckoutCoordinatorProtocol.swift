@@ -28,5 +28,5 @@ public protocol CheckoutCoordinatorProtocol: AnyObject {
     /// Completion failure method to get back an error if the we failed to get an authorization token from a payment view
     var onTokenFailure: ((PrimerAPIError) -> Void)? { get set }
 
-    func start(from presentingViewController: UIViewController) -> Self
+    func start(from presentingViewController: UIViewController)
 }

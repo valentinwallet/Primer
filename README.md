@@ -44,12 +44,70 @@ In Xcode go to :
 To use the Primer Checkout Coordinator you simply need to :
 
 ```swift
-let _ = PrimerCheckoutBuilder
+let coordinator = PrimerCheckoutBuilder
             .build()
-            .start(from: presentingViewController)
+
+coordinator.start(from: presentingViewController)
 ```
 
 That will build the `CheckoutCoordinator` and present it from the view you specified in `start(from:)` method.
+
+### Combine
+
+You have the option to get the token back using the power of Combine.
+
+```swift
+var subscriptions: Set<AnyCancellable> = .init()
+
+let coordinator = PrimerCheckoutBuilder
+            .build
+            
+coordinator
+    .tokenPublisher
+    .sink { tokenValue in
+        switch tokenValue {
+        case .failure(let error):
+            // use error
+        case .success(let token):
+            // use token
+        }
+    }
+    .store(in: &self.subscriptions)
+
+coordinator.start(from: presentingViewController)
+```
+
+### Delegate
+
+You have the option to get the token back using the power of Delegates.
+
+```swift
+let coordinator = PrimerCheckoutBuilder
+            .build
+            
+coordinator.delegate = self
+
+coordinator.start(from: presentingViewController)
+```
+
+### Completion
+
+You have the option to get the token back using the power of completion block.
+
+```swift
+let coordinator = PrimerCheckoutBuilder
+            .build
+            
+coordinator.onTokenSuccess { token
+    // use token
+}
+coordinator.onTokenFailure { error
+    // use error
+}
+
+coordinator.start(from: presentingViewController)
+```
+
 
 ### Customization
 
@@ -71,4 +129,16 @@ This customization leads us to this result :
 
 So choose your colors wisely 🧙‍♂️
 
-### Combine
+## Payment Methods
+
+✅  Payment with card 
+⚠️ Payment with Apple Pay [WIP]
+*Apple will trigger always the same amount and by adding this payment I just wanted to show how "easy" it was to add a new payment method in the current architecture*
+
+## Try it with the App Demo
+
+- Open `PrimerDemo/PrimerDemo.xcodeproj` in Xcode
+- In Xcode, go to `File -> Packages -> Resolve package versions`
+- Then run the project and you can use `HomeViewController` as a sandbox
+
+
