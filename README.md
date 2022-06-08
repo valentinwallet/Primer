@@ -131,8 +131,8 @@ So choose your colors wisely 🧙‍♂️
 
 ## Payment Methods
 
-✅  Payment with card 
-⚠️ Payment with Apple Pay [WIP]
+- ✅  Payment with card 
+- ⚠️ Payment with Apple Pay [WIP]
 *Apple will trigger always the same amount and by adding this payment I just wanted to show how "easy" it was to add a new payment method in the current architecture*
 
 ## Try it with the App Demo
