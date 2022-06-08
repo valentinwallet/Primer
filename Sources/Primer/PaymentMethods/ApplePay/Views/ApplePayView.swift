@@ -15,11 +15,11 @@ protocol ApplePayViewDelegate: AnyObject {
 final class ApplePayView: UIView {
     private lazy var payButton: PrimerButton = {
         let button = PrimerButton()
-        button.tintColor = .white
+        button.tintColor = .systemBackground
         button.layer.cornerRadius = 8
-        button.backgroundColor = UIColor(red: 28/256, green: 28/256, blue: 30/256, alpha: 1)
+        button.backgroundColor = .systemBackgroundInverted
         button.setTitle("Pay with apple pay", for: .normal)
-        button.setTitleColor(.white, for: .normal)
+        button.setTitleColor(.systemBackground, for: .normal)
         button.setImage(UIImage(systemName: "applelogo"), for: .normal)
         button.addTarget(self, action: #selector(didTapOnPayButton(sender:)), for: .touchDown)
         return button

@@ -44,8 +44,12 @@ final class HomeViewController: UIViewController {
 
     private func showCheckout() {
         self.coordinator = PrimerCheckoutBuilder
+            .payButtonColor(.systemTeal)
+            .payButtonTitleColor(.systemRed)
             .payButtonTitle("Pay with card")
+            .payButtonCornerRadius(16)
             .payButtonImage(UIImage(systemName: "creditcard"))
+            .addPaymentMethod(.applePay(merchantId: "merchantId"))
             .build()
 
         self.coordinator?
