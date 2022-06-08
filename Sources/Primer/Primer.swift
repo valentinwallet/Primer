@@ -7,8 +7,8 @@
 
 /// Enum regrouping every services of the `Primer` package.
 public enum Primer {
-    /// Create a checkout builder in order to build a `PrimerCheckoutViewController`.
-    /// - Returns: PrimerCheckoutBuilder
+    /// Create a checkout builder in order to build a `CheckoutViewController`.
+    /// - Returns: CheckoutBuilder
     public static func checkoutBuilder() -> CheckoutBuilder {
         return CheckoutBuilder()
     }

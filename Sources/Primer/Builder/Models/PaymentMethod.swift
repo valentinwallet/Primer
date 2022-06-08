@@ -12,4 +12,5 @@ public enum PaymentMethod {
     case applePay(merchantId: String)
 }
 
+// MARK: - Equatable
 extension PaymentMethod: Equatable {}
