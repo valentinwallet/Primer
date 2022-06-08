@@ -32,7 +32,7 @@ public final class CheckoutCoordinator: CheckoutCoordinatorProtocol {
         self.checkoutViewControllerFactory = checkoutViewControllerFactory
     }
 
-    public func start(from presentingViewController: UIViewController) {
+    public func start(from presentingViewController: UIViewController) -> Self {
         self.buildPaymentMethodSections()
 
         let paymentMethodSectionViews = self.getPaymentMethodSectionViews()
@@ -42,6 +42,8 @@ public final class CheckoutCoordinator: CheckoutCoordinatorProtocol {
         self.navigationController = navigationController
 
         presentingViewController.present(navigationController, animated: true, completion: nil)
+
+        return self
     }
 
     private func buildPaymentMethodSections() {
