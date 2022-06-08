@@ -140,4 +140,11 @@ So choose your colors wisely 🧙‍♂️
 - In Xcode, go to `File -> Packages -> Resolve package versions`
 - Then run the project and you can use `HomeViewController` as a sandbox
 
+## Next Steps
 
+- Finish the implementation of the Apple Pay payment method
+- Integrate new payment methods like Paypal and Klarna
+- Publish the Pod and the Swift Package Manager
+- Automation of the release process to easily release a new version of the library on SPM and Cocoapods at the same time
+- Add accessibility to the Checkout View Controller
+- Add support for multiple language other than English
